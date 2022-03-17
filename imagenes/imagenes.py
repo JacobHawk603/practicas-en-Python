@@ -2,9 +2,10 @@ import cv2
 import numpy as np
 import copy
 
-img = cv2.imread('rose1.jpg', 1)
+img = cv2.imread('momiji.jpg', 1)
+imgGris = cv2.imread('momiji.jpg', 0)
 largo, alto, profundidad = img.shape
-cv2.imshow("Imagen de la hermosa AftynRose", img)
+cv2.imshow("Imagen de una ninja", img)
 
 #cv2.imgwrite('imagenNueva.png', img) <- Para guargar una nueva imgaen
 
@@ -42,6 +43,7 @@ r[:,:,1] = 0 #<- igualamos a 0 las capas de color r y g, dejando en la imagen ú
 bgrColor = np.hstack([b,g,r])
 
 cv2.imshow('capas bgr a color', bgrColor)
+cv2.imshow('foto a escala de grises', imgGris)
 
 negativo = np.zeros(img.shape, img.dtype)
 
