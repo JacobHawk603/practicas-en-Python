@@ -156,8 +156,8 @@ def grafRazonCompleja(z1, z2):
 
 def grafPotenciaCompleja(z1, n):
 
-    x = [z1.real, z2.real, potenciaCompleja(z1,n).real]
-    y = [z1.imag, z2.imag, potenciaCompleja(z1,n).imag]
+    x = [z1.real, potenciaCompleja(z1,n).real]
+    y = [z1.imag, potenciaCompleja(z1,n).imag]
 
     titulo = 'potencia ', n, ' de  z1= ', z1
 
