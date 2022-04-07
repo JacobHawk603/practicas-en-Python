@@ -2,13 +2,6 @@ import cv2
 import numpy as np
 
 umbral = int(input('valor del Umbral'))
-
-print("este commit pertenece al branch 1 y pertenece tambien al branch third")
-print("este comentario tambien pertenece al branch third")
-
-print("este commit pertenece al branch 1 y modificamos en una segunda prueba")
-print("este otro comentario tambien pertenece al branch main")
-
 img = cv2.imread('rose1.jpg', 0)
 cv2.imshow("imagen original", img)
 largo, alto = img.shape
