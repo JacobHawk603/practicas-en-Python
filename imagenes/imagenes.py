@@ -57,3 +57,5 @@ cv2.imshow('negativo de la imagen', negativo)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+print("este comentario pertenece al commit de second")
