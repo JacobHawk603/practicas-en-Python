@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 
-umbral = int(input('valor del Umbral'))
-img = cv2.imread('rose1.jpg', 0)
+umbral = int(input('valor del Umbral: '))
+img = cv2.imread('lenna_main.jpg', 0)
 cv2.imshow("imagen original", img)
 largo, alto = img.shape
 
