@@ -7,25 +7,6 @@ import numpy as np
 from librerias import calculadoraLib
 from sympy import solve, Symbol, Eq
 
-strA = input("a: ") #<- Alfa
-strB = input("b: ") #<- Beta
-strD = input("d: ") #<- Deta
-strR = input("r: ") #<- Gama
-
-strA = strA.replace(" ", "")
-strB = strB.replace(" ", "")
-strD = strD.replace(" ", "")
-strR = strR.replace(" ", "")
-
-strA = strA.replace("i", "j")
-strB = strB.replace("i", "j")
-strD = strD.replace("i", "j")
-strR = strR.replace("i", "j")
-
-A = complex(strA)
-B = complex(strB)
-D = complex(strD)
-R = complex(strR)
 
 def General():
     fz = []
@@ -76,7 +57,7 @@ def graficaCircunferenciaGeneral(fz):
     plt.show()
 
 
-def cartesiana():
+def centroRadio():
     fz = []
     fz.append(float(input("(X-xi)2: valor de xi: ")))
     fz.append(float(input("(Y-yi)2: vaglor de yi: ")))
@@ -88,7 +69,7 @@ def cartesiana():
         exit
     return fz
 
-def graficaCircunferenciaCartesiana(fz):
+def graficaCircunferenciaCentroRadio(fz):
     x = np.linspace(-(math.sqrt(fz[2]) + 5), (math.sqrt(fz[2]) + 5), 100)
     y = np.linspace(-(math.sqrt(fz[2]) + 5), (math.sqrt(fz[2]) + 5), 100)
     X, Y = np.meshgrid(x,y)
@@ -100,7 +81,19 @@ def graficaCircunferenciaCartesiana(fz):
     plt.grid()
     plt.show()
 
-def conversionGeneral2Cartesiana(fz):
+def graficaCircunferenciaCentroRadio(fz, puntos):
+    x = np.linspace(-(math.sqrt(fz[2]) + 5), (math.sqrt(fz[2]) + 5), 100)
+    y = np.linspace(-(math.sqrt(fz[2]) + 5), (math.sqrt(fz[2]) + 5), 100)
+    X, Y = np.meshgrid(x,y)
+    print(fz[0], fz[1], fz[2])
+    F = (X - fz[0])**2 + (Y - fz[1])**2 - fz[2]
+    #F = X**2 + Y**2 - 0.6
+    plt.scatter(puntos[0], puntos[1])
+    plt.contour(X,Y,F,[0])
+    plt.grid()
+    plt.show()
+
+def conversionGeneral2CentroRadio(fz):
     gz =[]
     gz.append(-(fz[1]/(fz[0]*2)))
     gz.append(-(fz[2]/(fz[0]*2)))
@@ -146,51 +139,3 @@ def encontrarRadio(puntosMobius):
     datos = solve([fz, gz, hz], [x, y, r])
     print("me imprimo2")
     return datos[1]
-
-switch = int(input("1: forma general\n\n2: forma cartesiana"))
-
-
-if switch == 1:
-    ecuacion = General()
-    graficaCircunferenciaGeneral(ecuacion)
-
-    if ((A==complex('j') and B==complex('j') and D==complex('j') and R==complex('j')) or (A==complex('1') and B==complex('1') and D==complex('1') and R==complex('1'))):
-        plt.scatter(1,0)
-        plt.grid()
-        plt.show() 
-    else:
-
-        if ecuacion[0] != 0:
-            ecuacion = conversionGeneral2Cartesiana(ecuacion)
-            print("pase la conversion", ecuacion)
-
-            puntos = puntosNotables(ecuacion)
-            print("pase los puntos notables", puntos)
-        else:
-            puntos = puntosNotablesRecta(ecuacion)
-        
-        puntosMobius = transformacionMobius(puntos, A, B, D, R)
-        print("pase los puntos mobius", puntosMobius)
-        ecuacionTransformada = encontrarRadio(puntosMobius)
-        print("llegue al radio")
-        graficaCircunferenciaCartesiana(ecuacionTransformada)
-elif switch == 2:
-    ecuacion = cartesiana()
-    graficaCircunferenciaCartesiana(ecuacion)
-
-    if (A==complex('j') and B==complex('j') and D==complex('j') and R==complex('j') ):
-        plt.scatter(1,0)
-        plt.grid()
-        plt.show() 
-    else:
-        puntos = puntosNotables(ecuacion)
-
-        puntosMobius = transformacionMobius(puntos, A, B, D, R)
-        ecuacionTransformada = encontrarRadio(puntosMobius)
-        graficaCircunferenciaCartesiana(ecuacionTransformada)
-
-'''ecuacion = General()
-print(ecuacion, "\n\n despues de hacer la conversion")
-
-ecuacion = conversionGeneral2Cartesiana(ecuacion)
-print(ecuacion)'''
