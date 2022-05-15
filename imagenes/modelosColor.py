@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-imgBGR = cv2.imread("src/coloresRGB2.jpg", 1)
+imgBGR = cv2.imread("src/lenna_main.jpg", 1)
 imgCMYK = np.zeros(imgBGR.shape, imgBGR.dtype)
 imgHSI = np.zeros(imgBGR.shape, imgBGR.dtype)
 largo, alto, profundidad = imgBGR.shape

@@ -60,7 +60,7 @@ elif(catalogoFunciones == 5):
 n = int(input('inserte el exponente n: '))
 
 def validar_z0(curva, z0):
-    if((z0.real < (curva[0]+np.sqrt(curva[2]))) and (z0.real > (curva[0] - np.sqrt(curva[2]))) and (z0.imag < (curva[1]+np.sqrt(curva[2]))) and (z0.imag > (curva[1] - np.sqrt(curva[2])))):
+    if((z0.real < (curva[0]+np.sqrt(curva[2]))) and (z0.real > (curva[0] - np.sqrt(curva[2]))) and (z0.imag < (curva[1]+np.sqrt(curva[2]))) and (z0.imag > (curva[1] - np.sqrt(curva[2]))) and (np.sqrt(((curva[0]-z0.real)**2 + (curva[1]-z0.imag)**2)) < np.sqrt(curva[2]))):
         return True
     else:
         return False
