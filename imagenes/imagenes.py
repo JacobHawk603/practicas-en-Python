@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import copy
 
-img = cv2.imread('momiji.jpg', 1)
-imgGris = cv2.imread('momiji.jpg', 0)
+img = cv2.imread('src/momiji.jpg', 1)
+imgGris = cv2.imread('src/momiji.jpg', 0)
 largo, alto, profundidad = img.shape
 cv2.imshow("Imagen de una ninja", img)
 
