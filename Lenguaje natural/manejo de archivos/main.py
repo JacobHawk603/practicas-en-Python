@@ -4,7 +4,6 @@ nlp = spacy.load("es_core_news_sm")
 archivo_entrada = open('archivo_ejercicio_entrada.txt', encoding='utf8')
 
 dataset = archivo_entrada.readlines()
-print(dataset)
 archivo_entrada.close()
 
 normalizado = ""
@@ -21,9 +20,6 @@ for lines in dataset:
     else:
         normalizado += "\n"
     
-
-print(doc)
-print("\n\n")
 
 print(normalizado)
 
