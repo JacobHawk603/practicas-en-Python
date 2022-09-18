@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import vispy.plot as vp
+
 
 primos = []
 primosBin = []
@@ -8,18 +10,22 @@ m = int(input("inserte el numero maximo de primos: "))
 
 def encontrarPrimo(primos, numero):
     bandera = True
-    for i in range(len(primos)):
-        if numero % primos[i] == 0:
-            bandera = False
-            break
-    return bandera
+
+    if numero < 3:
+        return bandera
+    else:
+        for i in range(round(np.sqrt(numero))-1):
+            if numero % primos[i] == 0:
+                bandera = False
+                break
+        return bandera
 
 def convertirACadena(primos):
     cadenaArr = []
     for i in range(len(primos)):
         cadenaArr.append(bin(primos[i])[2:])
     
-    print(cadenaArr)
+    #print(cadenaArr)
     return cadenaArr
 
 def contarUnos(arregloPrimosBinario):
@@ -39,16 +45,19 @@ while(len(primos) < m):
         primos.append(i)
         #print(primos)
     
-    i+=1
-print(primos)
+    if i%2==0:
+        i+=1
+    else:
+        i+=2
+#print(primos)
 primosBin = convertirACadena(primos)
 arregloContadoresBinarios = contarUnos(primosBin)
-print(arregloContadoresBinarios)
+#print(arregloContadoresBinarios)
 
 #ploteo de la grafica---------------------------------------------------------------------------------------------------
 
 # make the data
-np.random.seed(3)
+'''np.random.seed(3)
 x = 4 + np.random.normal(0, 2, 24)
 y = 4 + np.random.normal(0, 2, len(x))
 
@@ -64,4 +73,16 @@ ax.scatter(primos, arregloContadoresBinarios, s=sizes, c=colors, vmin=0, vmax=10
 ax.set(xlim=(0, 8), xticks=primos,
        ylim=(0, 8), yticks=np.arange(1, 20))
 
-plt.show()
+plt.show()'''
+
+#otra forma de pleatar los primos--------------------------------------------------------------------------------------
+
+color = (0.3, 0.5, 0.8)
+n_bins = 100
+
+fig = vp.Fig(show=False)
+line = fig[0:4, 0:4].plot(arregloContadoresBinarios, symbol='o', width=0,
+                          face_color=color + (1,), edge_color=None,
+                          marker_size=4)
+line.set_gl_state(depth_test=False)
+fig.show(run=True)
