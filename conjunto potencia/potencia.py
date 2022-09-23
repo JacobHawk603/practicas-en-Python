@@ -1,16 +1,16 @@
 import numpy as np
 import vispy.plot as vp
-import contadorPrimosLib as contador
+import librerias.contadorPrimosLib as contador
 
 from asyncore import write
 
-token = open("version_dos_potencia/token.txt", "r").read()
+token = open("./token.txt", "r").read()
 
 if len(token) == 0:
-    token = open("version_dos_potencia/token.txt", "w")
+    token = open("./token.txt", "w")
     token.write('0')
     token.close()
-    token = open("version_dos_potencia/token.txt", "r").read()
+    token = open("./token.txt", "r").read()
 
 print(token)
 k = int(token)
@@ -19,15 +19,13 @@ k = int(token)
 if k >= 9:
     #Aquí se puede poner el algoritmo para plotear con vispy los unos totales.
 
-    txt = open("version_dos_potencia/conjuntoPotencia.txt", "r")
-    conjuntoPotencia = txt.read()
-    conjuntoPotencia.replace("}", "")
-    conjuntoPotencia.replace("{", "")
+    listaUnos = open("./listaUnos.txt", "r")
+    arregloContadores = listaUnos.read().split(",")
 
-    arregloBinarios = conjuntoPotencia.split(",")
+    for i in range(len((arregloContadores))-1):
+        arregloContadores[i] = int(arregloContadores[i])
 
-    arregloContadores = contador.contarUnos(arregloBinarios)
-
+    arregloContadores.pop()
     #hora de realizar el plot--------------------------------------------------------
 
     color = (0.3, 0.5, 0.8)
@@ -63,9 +61,30 @@ else:
         cadena+= '},'
 
     #print(cadena)
-    token = open("version_dos_potencia/token.txt", "w")
+    token = open("./token.txt", "w")
     token.write(str(m-1))
     token.close()
-    txt = open("version_dos_potencia/conjuntoPotencia.txt",'a')
+
+
+    txt = open("./conjuntoPotencia.txt",'a')
     txt.write(cadena)
     txt.close()
+
+    #Creamos el archivo txt que contiene la información de los unos que tiene cada elemento del conjunto potencia
+
+    conjuntoPotencia = cadena.replace("}", "")
+    conjuntoPotencia = conjuntoPotencia.replace("{", "")
+    conjuntoPotencia = conjuntoPotencia.replace(",,", ",")
+
+    arregloBinarios = conjuntoPotencia.split(",")
+    arregloContadores = contador.contarUnos(arregloBinarios)
+    
+    cadenaContadores = ""
+
+    for i in range(len(arregloContadores)-1):
+        
+        cadenaContadores += str(arregloContadores[i]) + ","
+
+    listaUnos = open("./listaUnos.txt", "a")
+    listaUnos.write(cadenaContadores)
+    listaUnos.close()
