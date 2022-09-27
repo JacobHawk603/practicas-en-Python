@@ -16,7 +16,7 @@ print(token)
 k = int(token)
 #token.close()
 
-if k >= 9:
+if k >= 20:
     #Aquí se puede poner el algoritmo para plotear con vispy los unos totales.
 
     listaUnos = open("./listaUnos.txt", "r")
