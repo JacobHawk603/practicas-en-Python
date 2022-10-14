@@ -1,3 +1,4 @@
+from pickle import FALSE, TRUE
 from pprint import pprint
 from random import randint
 import automataParesCerosUnos as filtroPares
@@ -8,7 +9,7 @@ def generadorDeCadenas64Bits(cantidad):
     for i in range(cantidad):
         cadena = ""
         for i in range(0,64):
-            cadena += str(randint(0,1))
+            cadena += str(randint(0,1000000)%2)
         
         cadenas += cadena + ","
     return cadenas
@@ -20,17 +21,29 @@ def readyState(bandera):
         print("conexión exitosa")
         print("generando archivo")
 
+        cadena = generadorDeCadenas64Bits(1000000)
+
         archivo = open("src/original.txt", "a")
-        archivo.write(generadorDeCadenas64Bits(10))
+        archivo.write(cadena)
         archivo.close()
         print("archivo generado exitosamente")
         
         print("enviando archivo")
         
-        archivo = open("src/original.txt", "r")
-        sendingState(archivo)
+        #las lineas comentadas a continuación son una solución idealizada, en la que mandamos archivos al servidor simulado
+        #no obstante, al mandar el archivo "original.txt" con los mismos elementos que ya había evaluado anteriormente se produce reundancia
+        #y un errror logico donde en los archivos "pares.txt" y "impares.txt" escribe nuevamente los elementos que ya contenía y agrega los nuevos
+        #Por cuestiones de optimización, decidí no enviar al siguiente estado del automata el archivo "original.txt"
+        #en vez de eso, enviamos los elementos generados aleatoriamente para que unicamente evalúe los nuevos elementos
+        #existen otras soluciones como la creacion de un archivo "token.txt" para crear un contador que lleve el conteo de los elementos ya evaluados
+        #Pero altería la idea de tener tres archivos, ñadiendo un cuarto archivo, por lo que he descartado esta idea, pero no está demas comentarla.
         
+        
+        #archivo = open("src/original.txt", "r")
+        sendingState(cadena) # <- Madamos una cadena de palabras de 64 bits separadas por comas, en vez del archivo completo
+        return True
     else:
+        return False
         exit()
 
 def sendingState(archivo):
@@ -38,8 +51,10 @@ def sendingState(archivo):
     pares = ""
     impares = ""
 
-    cadenas = archivo.read().split(",")
-    print(cadenas)
+    #cadenas = archivo.read().split(",")
+    cadenas = archivo.split(',') # <- al no ser un archivo, sino una cadena, solo necesitamos convertir los datos a arreglo, ya no leeer el archivo primero
+    cadenas.pop()
+    #print(cadenas)
     for element in cadenas:
         if filtroPares.estado0(element, 0):
             pares += element + ","
@@ -54,4 +69,11 @@ def sendingState(archivo):
     return 1
 
 
-readyState(1)
+def main():
+    while(readyState(randint(0,1))):
+        print("Protocolo completado")
+
+if __name__ == "__main__":
+    main()
+
+

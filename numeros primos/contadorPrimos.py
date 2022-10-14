@@ -6,7 +6,7 @@ import vispy.plot as vp
 primos = []
 primosBin = []
 arregloContadoresBinarios = []
-m = int(input("inserte el numero maximo de primos: "))
+m = int(input("calcular primos hasta: "))
 k = 0
 cadenaContadores = ""
 cadenaBinarios = ""
@@ -69,7 +69,7 @@ except:
     print("el arreglo de numeros primos comienza vacío")
 
 i = k
-while(len(primos) < m):
+while(i < m):
 
     if encontrarPrimo(primos, i):
         primos.append(i)
@@ -89,21 +89,21 @@ token = open("./token.txt", "w")
 token.write(str(i) + "," + str(len(primos))) #anteriormente le dimos a i el valor de k que es el token inicial, así que i es el token final
 token.close()
 
-for j in range(cantidadPrimos, m): #Tenemos que corregir esta parte, esto queda pendiente
+for j in range(cantidadPrimos, len(primos)): #Tenemos que corregir esta parte, esto queda pendiente
     cadenaPrimos += str(primos[j]) + ","
 
 archivoPrimos = open("./primos.txt", "a")
 archivoPrimos.write(cadenaPrimos)
 archivoPrimos.close()
 
-for j in range (cantidadPrimos, m):
+for j in range (cantidadPrimos, len(primos)):
     cadenaBinarios += primosBin[j] + ","
 
 archivoPrimosBinario = open("./primosBin.txt", "a")
 archivoPrimosBinario.write(cadenaBinarios)
 archivoPrimosBinario.close()
 
-for j in range (cantidadPrimos, m):
+for j in range (cantidadPrimos, len(primos)):
     cadenaContadores += str(arregloContadoresBinarios[j]) + ","
 
 archivoContadores = open("./contadoresPrimos.txt", "a")
