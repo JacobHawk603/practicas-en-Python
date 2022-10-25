@@ -70,15 +70,7 @@ def sendingState(archivo):
     archivoImpares.write(impares)
     return 1
 
-
-def main():
-
-    #No te olvides de descomentar esta parte para que funcione correctamenete el programa
-    '''while(readyState(randint(0,1))):
-        print("Protocolo completado")'''
-
-    #a partir de este punto comenzamos a programar el modo grafico-------------------------------------------------------
-
+def GraficarAutomata():
     #coordenadas de mi tortuga
     x = 0
     y = 0
@@ -162,6 +154,16 @@ def main():
     tortuga.goto(0,0)
 
     turtle.done()
+
+def main():
+
+    #No te olvides de descomentar esta parte para que funcione correctamenete el programa
+    '''while(readyState(randint(0,1))):
+        print("Protocolo completado")'''
+
+    #a partir de este punto comenzamos a programar el modo grafico-------------------------------------------------------
+
+    GraficarAutomata()
 
     #--------------------------------------------------------------------------------------------------------------------
 
