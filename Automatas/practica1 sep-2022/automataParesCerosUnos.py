@@ -1,30 +1,29 @@
 from random import randint
 
-cadena = "000101010010"
+cadena = "000110000011110101"
 bandera = False
 
 def estado0(entrada, contador):#Si retorna True, La cadena que se ha inspeccionado cuenta con una cantidad par tanto de ceros como de unos
     #print("estado0")
     #print(contador)
     global bandera
-    if contador < len(entrada):
+
+    try:
         #print(entrada[contador])
         if entrada[contador] == '1':
             contador+=1
             estado1(entrada, contador)
         else:
             contador+=1
-            estado2(entrada, contador)
-        
-    else:
+            estado2(entrada, contador) 
+    except:
+
         bandera = True
-    
-    return bandera
-    
+        return bandera    
         
 def estado1(entrada, contador):
-    #print("estado1")
-    if contador < len(entrada):
+
+    try:
         #print(entrada[contador])
         if entrada[contador] == '1':
             contador+=1
@@ -32,10 +31,13 @@ def estado1(entrada, contador):
         else:
             contador+=1
             estado3(entrada, contador)
+    except:
+        bandera = False
+        return bandera
 
 def estado2(entrada, contador):
-    #print("estado2")
-    if contador < len(entrada):
+    
+    try:
         #print(entrada[contador])
         if entrada[contador] == '1':
             contador+=1
@@ -43,10 +45,13 @@ def estado2(entrada, contador):
         else:
             contador+=1
             estado0(entrada, contador)
+    except:
+        bandera = False
+        return bandera
 
 def estado3(entrada, contador):
-    #print("estado3")
-    if contador < len(entrada):
+    
+    try:
         #print(entrada[contador])
         if entrada[contador] == '1':
             contador+=1
@@ -54,6 +59,9 @@ def estado3(entrada, contador):
         else:
             contador+=1
             estado1(entrada, contador)
+    except:
+        bandera = False
+        return bandera
 
 
 '''def main():
