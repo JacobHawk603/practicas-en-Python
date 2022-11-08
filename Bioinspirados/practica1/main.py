@@ -86,15 +86,15 @@ def selPadresRuleta(poblacion):
 
     print("frecuencia acumulada", T)
     for i in range(len(poblacion)):
-        if T[i] < aleatorio and T[i+1] > aleatorio:
-            padres.append(poblacion[i+1])
+        if T[i] > aleatorio:
+            padres.append(poblacion[i])
             break
     
     #Seleccion del segundo padre
     aleatorio = uniform(0,1)
     for i in range(len(poblacion)):
-        if T[i] < aleatorio and T[i+1] > aleatorio:
-            padres.append(poblacion[i+1])
+        if T[i] > aleatorio:
+            padres.append(poblacion[i])
             break
 
 
@@ -147,8 +147,12 @@ def remplazoDePadresMasDebiles(competidores):
                     break
                 else:
                     bandera = True
+
         else:
             break
+
+    if len(copiaCompetidores) == 0:
+        bandera = True
 
     if bandera == True:
         campeon = gladiador
@@ -177,10 +181,13 @@ def remplazoDePadresMasDebiles(competidores):
                     break
                 else:
                     bandera = True
+
         else:
             break
             
-    
+    if len(copiaCompetidores) == 0:
+        bandera = True
+
     if bandera == True:
         subcampeon = gladiador
 
@@ -195,27 +202,14 @@ def fx(genotipo):
 
     return funcionX
 
-def main():
-    #generamos la problación inicial
-    poblacion = []
+def remplazoGeneracional(poblacion):
 
-    pc = 0.85
+    nuevaGeneracion = []
+    contador = 0
+
     pm = 0.1
-    
-    for i in range (10):
-        generado = generarIndividuo(4)
-        objetivo = fx(generado)
-        poblacion.append([generado, objetivo])
-    
-    print("poblacion: \n",np.matrix(poblacion))
 
-    #observemos la funcion objetivo con nuestra poblacion inicial
-    #for i in range(len(poblacion)):
-    #    poblacion[i].append(fx(poblacion[i]))
-    #print("\n\n\n",np.matrix(poblacion))
-    
-    #periodo de cruza
-    if uniform(0,1) < pc:
+    while(contador < 5):
         #seleccion de padres
         padres = selPadresRuleta(poblacion)
         print("los padres son:\n ", np.matrix(padres))    
@@ -234,6 +228,48 @@ def main():
             padres.append(hijos[i])
         ganadores = remplazoDePadresMasDebiles(padres)
         print("los ganadores : ", ganadores)
+
+        #anadimos los ganadores a la nueva poblacion
+        for i in range(len(ganadores)):
+            nuevaGeneracion.append([ganadores[i][0], ganadores[i][1]])
+        
+        contador +=1
+
+    print("La nueva generacion:\n\n", np.matrix(nuevaGeneracion))
+
+    return nuevaGeneracion
+
+def main():
+    #generamos la problación inicial
+    poblacion = []
+    nuevaGeneracion = []
+    contador = 0
+    generacion = 0
+
+    pc = 0.85
+    
+    for i in range (10):
+        generado = generarIndividuo(4)
+        objetivo = fx(generado)
+        poblacion.append([generado, objetivo])
+    
+    print("poblacion: \n",np.matrix(poblacion))
+
+    #observemos la funcion objetivo con nuestra poblacion inicial
+    #for i in range(len(poblacion)):
+    #    poblacion[i].append(fx(poblacion[i]))
+    #print("\n\n\n",np.matrix(poblacion))
+    
+    for generacion in range(10):
+
+        #periodo de cruza
+        if uniform(0,1) < pc:
+            poblacion = remplazoGeneracional(poblacion)
+        else:
+            print("La poblacion pasa a la siguiente generacion")
+            poblacion = poblacion
+    
+    print("Esta es la poblacion que quedo 10 generaciones despues: \n\n", np.matrix(poblacion))
         
 if __name__ == "__main__":
     main()
