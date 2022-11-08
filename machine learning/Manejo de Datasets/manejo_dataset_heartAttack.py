@@ -1,9 +1,11 @@
+from encodings import utf_8
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import KFold
 import numpy as np
 import sys
 import pickle
+import random
 
 class validation_set:
 	def __init__(self, X_train, y_train, X_test, y_test):
@@ -23,14 +25,45 @@ class data_set:
 		self.test_set = test_set
 
 def generate_train_test(file_name):
+	#primero generamos un archivo que se contiene el dataset mezclado
+	dataset = open("heart.csv", "r", encoding='utf8')
+	datos = dataset.readlines()
+	dataset.close()
+	cadena = ""
+	encabezadoX = ""
+	encabezadoY = ""
+	encabezado = datos.pop(0)
+
+	arrEncabezado = encabezado.split(',')
+	encabezadoY = arrEncabezado.pop()
+
+	for element in arrEncabezado:
+		encabezadoX += element
+
+	random.shuffle(datos)
+
+	cadena =  str(encabezado)
+
+	for element in datos:
+		cadena += str(element)
+
+	dataset = open("heart2.csv", "w", encoding='utf8')
+	dataset.write(str(cadena))	
+	
+
 	# ~ pd.options.display.max_colwidth = 200		#Define el acho de las columnas (ancho máximo por default 50 caracteres)		
 	#Lee el corpus original del archivo de entrada y lo pasa a un DataFrame
 	df = pd.read_csv(file_name, sep=',', engine='python')
-	X = df.drop('y',axis=1).values    						#corpus sin etiquetas 
-	y = df['y'].values 									#etiquetas
-	
+	X = df.drop('target',axis=1).values    						#corpus sin etiquetas 
+	y = df['target'].values 									#etiquetas
+
+	#definims una variable para controlar los pliegues
+	#pliegues = input("validacion cruzada con cuantos pliegues")
+	#tamanoTest = 1/pliegues
+
 	#Separa corpus en conjunto de entrenamiento y prueba
-	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5, shuffle = False)	
+
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, shuffle = False)	
 	
 	print('\n Dataset\n', df)
 	print('\n Corpus')
@@ -47,6 +80,7 @@ def generate_train_test(file_name):
 	print('\n X_train\n', *X_train)
 	print('\n y_train\n', *y_train)
 	
+	'''
 	#Crea pliegues para la validación cruzada
 	print ('----------------------')
 	print('\n VALIDACION CRUZADA k=2\n')
@@ -68,10 +102,40 @@ def generate_train_test(file_name):
 	
 	#Guarda el dataset con los pliegues del conjunto de validación y el conjunto de pruebas
 	my_data_set = data_set(validation_sets, my_test_set) 
+	return (my_data_set)'''
+
+	#guardamos los conjuntos de validacion y prueba en la clase my_data_set
+	validation_sets = []
+
+	validation_sets.append(validation_set(X_train, y_train, X_test, y_test))
+	my_test_set = test_set(X_test, y_test)
+
+	my_data_set = data_set(validation_sets, my_test_set) 
 	return (my_data_set)
 
+
 if __name__=='__main__':
-	my_data_set=generate_train_test('peleteria.csv')
+
+	dataset = open("heart.csv", "r", encoding='utf8')
+	datos = dataset.readlines()
+	dataset.close()
+	cadena = ""
+	encabezadoX = ""
+	encabezadoY = ""
+	encabezado = datos.pop(0)
+
+	arrEncabezado = encabezado.split(',')
+	encabezadoY = arrEncabezado.pop()
+
+
+	for i in range(len(arrEncabezado)):
+
+		if i < len(arrEncabezado)-1:
+			encabezadoX += arrEncabezado[i] + ","
+		else:
+			encabezadoX += arrEncabezado[i]
+
+	my_data_set=generate_train_test('heart.csv')
 	
 	#Guarda el dataset en formato csv
 	np.savetxt("X_test.csv", my_data_set.test_set.X_test, delimiter=",", fmt="%d",
@@ -82,14 +146,14 @@ if __name__=='__main__':
     
 	i = 1
 	for val_set in my_data_set.validation_set:
-		np.savetxt("X_train_v" + str(i) + ".csv", val_set.X_train, delimiter=",", fmt="%d",
-           header="x", comments="")
-		np.savetxt("X_test_v" + str(i) + ".csv", val_set.X_test, delimiter=",", fmt="%d",
-           header="x", comments="")
-		np.savetxt("y_train_v" + str(i) + ".csv", val_set.y_train, delimiter=",", fmt="%d",
-           header="y", comments="")
-		np.savetxt("y_test_v" + str(i) + ".csv", val_set.y_test, delimiter=",", fmt="%d",
-           header="y", comments="")
+		np.savetxt("X_e.csv", val_set.X_train, delimiter=",", fmt="%d",
+           header=encabezadoX, comments="")
+		np.savetxt("X_p.csv", val_set.X_test, delimiter=",", fmt="%d",
+           header=encabezadoX, comments="")
+		np.savetxt("y_e.csv", val_set.y_train, delimiter=",", fmt="%d",
+           header=encabezadoY, comments="")
+		np.savetxt("y_p.csv", val_set.y_test, delimiter=",", fmt="%d",
+           header=encabezadoY, comments="")
 		i = i + 1
 	
 	#Guarda el dataset en pickle
