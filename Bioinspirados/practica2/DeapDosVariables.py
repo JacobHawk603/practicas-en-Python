@@ -20,8 +20,8 @@ pset.addPrimitive(operator.sub, 2)
 pset.addPrimitive(operator.mul, 2)
 pset.addPrimitive(protectedDiv, 2)
 pset.addPrimitive(operator.neg, 1)
-pset.addPrimitive(math.cos, 1)
-pset.addPrimitive(math.sin, 1)
+#pset.addPrimitive(math.cos, 1)
+#pset.addPrimitive(math.sin, 1)
 pset.addEphemeralConstant("rand101", lambda: random.randint(-1,1))
 #pset.renameArguments(ARG0='x')
 
@@ -80,5 +80,6 @@ hof = tools.HallOfFame(1)
 pop, log = algorithms.eaSimple(pop, toolbox, 0.5, 0.1, 40, stats=mstats,
                                 halloffame=hof, verbose=True)
 
+print("sala de fama: ", *hof)
 
-print("sala de fama: ", hof)
+print(evalSymbReg(*hof, points=puntos))

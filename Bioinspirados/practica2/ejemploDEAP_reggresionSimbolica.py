@@ -69,3 +69,5 @@ pop = toolbox.population(n=300)
 hof = tools.HallOfFame(1)
 pop, log = algorithms.eaSimple(pop, toolbox, 0.5, 0.1, 40, stats=mstats,
                                 halloffame=hof, verbose=True)
+
+print(*hof)
