@@ -144,7 +144,7 @@ def generadorCadenas():
     cadena = []
     
     for i in range(m-2):
-        for j in range(2**(i+3)):
+        for j in range(2**(i+2)):
             
             #print(bin(j)[2:])
             aux = '#0' + str(i+4) + 'b'
@@ -158,6 +158,8 @@ def main():
     posicion = 0
     cadenas = []
     caminos = []
+    
+    caminosArchivo = open("./caminos1.txt", "w", encoding="utf8")
 
     cadenas = generadorCadenas()
     print(cadenas)
@@ -169,10 +171,10 @@ def main():
         if retorno:
             caminos.append(cadenas[i])
             print("cadena aceptada: ", cadenas[i])
+            caminosArchivo.write(str(cadenas[i]) + "\n")
         else:
             print("rechazada")
 
-    
 
 
 if __name__ == "__main__":
