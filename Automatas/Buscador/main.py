@@ -533,7 +533,7 @@ def estadoAE(cadena, i, bandera):
     
     return bandera
 
-def estadoAC(cadena, i, bandera):
+def estadoAF(cadena, i, bandera):
     bandera = False
     try:
         if(cadena[i] == 'c'):
@@ -627,13 +627,366 @@ def estadoAL(cadena, i, bandera):
     bandera = False
     try:
         if(cadena[i] == 'c'):
+            bandera = estadoAP(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAM(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoAQ(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAN(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
             bandera = estadoB(cadena, i+1, bandera)
         elif(cadena[i] == 'd'):
             bandera = estadoC(cadena, i+1, bandera)
         elif(cadena[i] == 'g'):
             bandera = estadoD(cadena, i+1, bandera)
-        elif(cadena[i] == 'c'):
-            bandera = estadoAP(cadena, i+1, bandera)
+        elif(cadena[i] == 'n'):
+            bandera = estadoAR(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAO(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        elif(cadena[i] == 'a'):
+            bandera = estadoAS(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAP(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        elif(cadena[i] == 'a'):
+            bandera = estadoAT(cadena, i+1, bandera)
+        elif(cadena[i] == 'o'):
+            bandera = estadoG(cadena, i+1, bandera)
+        elif(cadena[i] == 'u'):
+            bandera = estadoH(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAQ(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        elif(cadena[i] == 'a'):
+            bandera = estadoE(cadena, i+1, bandera)
+        elif(cadena[i] == 'i'):
+            bandera = estadoAU(cadena, i+1, bandera)
+        elif(cadena[i] == 'o'):
+            bandera = estadoG(cadena, i+1, bandera)
+        elif(cadena[i] == 'u'):
+            bandera = estadoH(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAR(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoBD(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        elif(cadena[i] == 'a'):
+            bandera = estadoAS(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAS(cadena, i, bandera):
+    bandera = True
+    contadores[4]+=1
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoBD(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAT(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        elif(cadena[i] == 'l'):
+            bandera = estadoM(cadena, i+1, bandera)
+        elif(cadena[i] == 'n'):
+            bandera = estadoAF(cadena, i+1, bandera)
+        elif(cadena[i] == 's'):
+            bandera = estadoAX(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAU(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        elif(cadena[i] == 'a'):
+            bandera = estadoAY(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAV(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        elif(cadena[i] == 't'):
+            bandera = estadoAZ(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAW(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoBD(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAX(cadena, i, bandera):
+    bandera = True
+    contadores[6] += 1
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAY(cadena, i, bandera):
+    bandera = True
+    contadores[3] += 1
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoAZ(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoD(cadena, i+1, bandera)
+        elif(cadena[i] == 'a'):
+            bandera = estadoBA(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoBA(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoBB(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoBB(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoBB(cadena, i+1, bandera)
+        elif(cadena[i] == 'i'):
+            bandera = estadoBC(cadena, i+1, bandera, 0)
+        elif(cadena[i] == 'r'):
+            bandera = estadoL(cadena, i+1, bandera)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoBC(cadena, i, bandera, camino):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoBB(cadena, i+1, bandera)
+        elif(cadena[i] == 'o'):
+            bandera = estadoBE(cadena, i+1, bandera, camino)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoBD(cadena, i, bandera):
+    bandera = False
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoBB(cadena, i+1, bandera)
+        elif(cadena[i] == 'a'):
+            bandera = estadoE(cadena, i+1, bandera)
+        elif(cadena[i] == 'i'):
+            bandera = estadoBC(cadena, i+1, bandera, 1)
+        else:
+            bandera = estadoA(cadena, i+1, bandera)
+    except:
+        return bandera
+    
+    return bandera
+
+def estadoBE(cadena, i, bandera, camino):
+    bandera = True
+
+    if(camino == 0):
+        contadores[2] +=1
+    else:
+        contadores[5] +=1
+
+    try:
+        if(cadena[i] == 'c'):
+            bandera = estadoB(cadena, i+1, bandera)
+        elif(cadena[i] == 'd'):
+            bandera = estadoC(cadena, i+1, bandera)
+        elif(cadena[i] == 'g'):
+            bandera = estadoBB(cadena, i+1, bandera)
         else:
             bandera = estadoA(cadena, i+1, bandera)
     except:
@@ -642,7 +995,7 @@ def estadoAL(cadena, i, bandera):
     return bandera
 
 def main():
-    cadena = "covidolor"
+    cadena = "covid" #<- cualquier cadena de la que se desee encontrar las palabras del automata
     bandera = estadoA(cadena,0, False)
     print(bandera, contadores)    
     return 0
