@@ -74,7 +74,7 @@ def estadoG(cadena, posicion, bandera):
     
     try:
         if(cadena[posicion] == '0'):
-            bandera = estadoI(cadena, posicion+1, bandera)
+            bandera = estadoF(cadena, posicion+1, bandera)
         else:
             bandera = estadoJ(cadena, posicion+1, bandera)
     except:
@@ -124,7 +124,7 @@ def estadoK(cadena, posicion, bandera):
     
     try:
         if(cadena[posicion] == '0'):
-            bandera = estadoF(cadena, posicion+1, bandera)
+            bandera = estadoK(cadena, posicion+1, bandera)
         else:
             bandera = estadoJ(cadena, posicion+1, bandera)
     except:
