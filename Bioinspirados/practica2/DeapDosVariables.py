@@ -23,7 +23,8 @@ pset.addPrimitive(operator.neg, 1)
 #pset.addPrimitive(math.cos, 1)
 #pset.addPrimitive(math.sin, 1)
 pset.addEphemeralConstant("rand101", lambda: random.randint(-1,1))
-#pset.renameArguments(ARG0='x')
+pset.renameArguments(ARG0='x')
+pset.renameArguments(ARG1='y')
 
 
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
