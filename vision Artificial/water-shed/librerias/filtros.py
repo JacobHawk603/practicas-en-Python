@@ -70,6 +70,34 @@ def filtrarImagen(imagenBNExpandida, imagenBN, filtro):
 
     return filtrada
 
+def filtrarImagenLoG(imagenBNExpandida, imagenBN, filtro):
+    largo, alto = imagenBN.shape
+    largoFiltro, altoFiltro = filtro.shape
+    filtrada = np.zeros(imagenBN.shape, dtype=float)
+
+    convolucion = 0
+    x = 0
+    y = 0
+
+    for i in range(largo):
+        for j in range(alto):
+
+            x = i
+            for k in range(largoFiltro):
+                y = j
+                for l in range(altoFiltro):
+                    convolucion += float(imagenBNExpandida[x,y]) * filtro[k,l]
+                    y += 1
+            
+                x +=1
+
+            filtrada[i,j] = int(convolucion)
+            convolucion = 0
+    
+    #print(filtrada[:50,:50])
+
+    return filtrada
+
 def expandirImagen(imagenBN, filtro):
     largo, alto =  imagenBN.shape
     largoFiltro, altoFiltro = filtro.shape

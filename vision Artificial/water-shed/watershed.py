@@ -32,17 +32,11 @@ def main():
     #obtenemos el histograma de la imagen para el futuro umbralado
     histograma = obtenerHistograma(imagenBN)
 
-    #aplicamos el suavizado
-    kernelLoG = filtros.kernelLoG(5, 1)
-
     #aplicamos el suavizado con el gausiano
     kernelGaussiano = filtros.kernelGauss(5,1)
     
     #obtenemos la imagen de transición
-    imagenExpandida = filtros.expandirImagen(imagenBN, kernelLoG)
-
-    #aplicamos el filtro LoG
-    filtradaLoG = filtros.filtrarImagen(imagenExpandida, imagenBN, kernelLoG)
+    imagenExpandida = filtros.expandirImagen(imagenBN, kernelGaussiano)
 
     #aplicamos tambien el filtro gausiano
     filtradaGausiano = filtros.filtrarImagen(imagenExpandida, imagenBN, kernelGaussiano)
@@ -51,7 +45,6 @@ def main():
     umbral = binarizacion.OTSU(histograma)
 
     #umbralamos
-    imagenUmbraladaLoG = binarizacion.umbralar(filtradaLoG, largo, alto, umbral)
     imagenUmbraladaGaussiana = binarizacion.umbralar(filtradaGausiano, largo, alto, umbral)
 
     #aplicamos el watershed desde la funcion
@@ -59,7 +52,6 @@ def main():
 
     cv2.imshow("Lenna", imagen)
     cv2.imshow("Lenna blanco y negro", imagenBN)
-    cv2.imshow("Lenna Umbralada", imagenUmbraladaLoG)
     cv2.imshow("Lenna Umbralada", imagenUmbraladaGaussiana)
 
     cv2.waitKey(0)
@@ -85,11 +77,11 @@ def waterShed(imagenUmbralada, imagen, umbral):
     # Finding unknown region
     sure_fg = np.uint8(sure_fg)
     unknown = cv2.subtract(sure_bg,sure_fg)
-    cv2.imshow("Lenna", sure_fg)
-
 
     # Marker labelling
     ret, markers = cv2.connectedComponents(sure_fg)
+
+    #cv2.imshow("markers", markers)
 
     # Add one to all labels so that sure background is not 0, but 1
     markers = markers+1
@@ -101,6 +93,10 @@ def waterShed(imagenUmbralada, imagen, umbral):
     imagen[markers == -1] = [255,0,0]
 
     cv2.imshow("watershed", imagen)
+    cv2.imshow("watershed2", unknown)
+    cv2.imshow("watershed3", sure_bg)
+    cv2.imshow("Lenna", sure_fg)
+    cv2.imshow("watershed4", dist_transform)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
