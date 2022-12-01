@@ -12,9 +12,9 @@ def umbralar(img, largo, alto, umbral):
     for x in range(largo):
         for y in range(alto):
             if(img[x, y]<umbral):
-                img2[x, y] = 0
+                img2[x, y] = 255
             else:
-                img2[x,y] = 255
+                img2[x,y] = 0
 
 
     #cv2.imshow("imagen umbralada", img2)

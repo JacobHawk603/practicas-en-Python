@@ -25,50 +25,82 @@ def obtenerHistograma(imagenBN):
     return histograma
 
 def main():
-    imagen = cv2.imread("../src/lenna_main.jpg", 1)
-    imagenBN = cv2.imread("../src/lenna_main.jpg", 0)
+    imagen = cv2.imread("../src/monedad.jpg", 1)
+    imagenBN = cv2.cvtColor(imagen,cv2.COLOR_BGR2GRAY)
     largo, alto = imagenBN.shape
 
     #obtenemos el histograma de la imagen para el futuro umbralado
     histograma = obtenerHistograma(imagenBN)
 
     #aplicamos el suavizado
-    kernel = filtros.kernelLoG(5, 1)
+    kernelLoG = filtros.kernelLoG(5, 1)
+
+    #aplicamos el suavizado con el gausiano
+    kernelGaussiano = filtros.kernelGauss(5,1)
     
     #obtenemos la imagen de transición
-    imagenExpandida = filtros.expandirImagen(imagenBN, kernel)
+    imagenExpandida = filtros.expandirImagen(imagenBN, kernelLoG)
 
     #aplicamos el filtro LoG
-    filtradaLoG = filtros.filtrarImagen(imagenExpandida, imagenBN, kernel)
+    filtradaLoG = filtros.filtrarImagen(imagenExpandida, imagenBN, kernelLoG)
+
+    #aplicamos tambien el filtro gausiano
+    filtradaGausiano = filtros.filtrarImagen(imagenExpandida, imagenBN, kernelGaussiano)
 
     #obtenemos el umbral con OTSU
     umbral = binarizacion.OTSU(histograma)
 
     #umbralamos
-    imagenUmbralada = binarizacion.umbralar(filtradaLoG, largo, alto, umbral)
+    imagenUmbraladaLoG = binarizacion.umbralar(filtradaLoG, largo, alto, umbral)
+    imagenUmbraladaGaussiana = binarizacion.umbralar(filtradaGausiano, largo, alto, umbral)
 
     #aplicamos el watershed desde la funcion
-    waterShed(imagenUmbralada)
+    #waterShed(imagenUmbraladaGaussiana)
 
     cv2.imshow("Lenna", imagen)
     cv2.imshow("Lenna blanco y negro", imagenBN)
-    cv2.imshow("Lenna Umbralada", imagenUmbralada)
+    cv2.imshow("Lenna Umbralada", imagenUmbraladaLoG)
+    cv2.imshow("Lenna Umbralada", imagenUmbraladaGaussiana)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-
-def waterShed(imagenUmbralada):
-
-    distancia = ndi.distance_transform_edt(imagenUmbralada)
-    coordenadas = peak_local_max(min_distance=distancia, labels=imagenUmbralada)
-    mascara = np.zeros(distancia.shape, dtype=bool)
-    mascara[tuple(coordenadas.T)] = True
-    marcadores, _ = ndi.label(mascara)
-    etiquetas = cv2.watershed(imagenUmbralada, marcadores)
+    waterShed(imagenUmbraladaGaussiana, imagen, umbral)
 
 
-    cv2.imshow("watershed", etiquetas)
+def waterShed(imagenUmbralada, imagen, umbral):
+
+    thresh = umbral
+    # noise removal
+    kernel = np.ones((3,3),np.uint8)
+    opening = cv2.morphologyEx(imagenUmbralada,cv2.MORPH_OPEN,kernel, iterations = 2)
+
+    # sure background area
+    sure_bg = cv2.dilate(opening,kernel,iterations=3)
+
+    # Finding sure foreground area
+    dist_transform = cv2.distanceTransform(opening,cv2.DIST_L2,5)
+    ret, sure_fg = cv2.threshold(dist_transform,0.7*dist_transform.max(),255,0)
+
+    # Finding unknown region
+    sure_fg = np.uint8(sure_fg)
+    unknown = cv2.subtract(sure_bg,sure_fg)
+    cv2.imshow("Lenna", sure_fg)
+
+
+    # Marker labelling
+    ret, markers = cv2.connectedComponents(sure_fg)
+
+    # Add one to all labels so that sure background is not 0, but 1
+    markers = markers+1
+
+    # Now, mark the region of unknown with zero
+    markers[unknown==255] = 0
+
+    markers = cv2.watershed(imagen,markers)
+    imagen[markers == -1] = [255,0,0]
+
+    cv2.imshow("watershed", imagen)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
