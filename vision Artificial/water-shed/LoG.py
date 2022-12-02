@@ -69,7 +69,7 @@ def obtenerBordes(imagenFiltradaLog):
     matrizDelta = np.zeros(imagenFiltradaLog.shape, imagenFiltradaLog.dtype)
     imagenBordada = np.zeros(imagenFiltradaLog.shape, imagenFiltradaLog.dtype)
 
-    delta = 20
+    delta = 5
 
     #logica para la deteccion de cruces con cero <- matriz detectora de bordes
 

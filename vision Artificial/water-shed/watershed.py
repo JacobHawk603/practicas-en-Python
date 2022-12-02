@@ -3,7 +3,9 @@ from librerias import binarizacion
 from librerias import filtros
 from scipy import ndimage as ndi
 from skimage.feature import peak_local_max
+from skimage.segmentation import watershed
 import numpy as np
+import matplotlib.pyplot as plt
 
 def obtenerHistograma(imagenBN):
     contador = 0
@@ -57,7 +59,8 @@ def main():
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    waterShed(imagenUmbraladaGaussiana, imagen, umbral)
+    #waterShed(imagenUmbraladaGaussiana, imagen, umbral)
+    watershed2(imagenUmbraladaGaussiana)
 
 
 def waterShed(imagenUmbralada, imagen, umbral):
@@ -72,6 +75,8 @@ def waterShed(imagenUmbralada, imagen, umbral):
 
     # Finding sure foreground area
     dist_transform = cv2.distanceTransform(opening,cv2.DIST_L2,5)
+    cv2.imshow("distancia", dist_transform)
+
     ret, sure_fg = cv2.threshold(dist_transform,0.7*dist_transform.max(),255,0)
 
     # Finding unknown region
@@ -92,13 +97,41 @@ def waterShed(imagenUmbralada, imagen, umbral):
     markers = cv2.watershed(imagen,markers)
     imagen[markers == -1] = [255,0,0]
 
-    cv2.imshow("watershed", imagen)
-    cv2.imshow("watershed2", unknown)
-    cv2.imshow("watershed3", sure_bg)
-    cv2.imshow("Lenna", sure_fg)
-    cv2.imshow("watershed4", dist_transform)
+    cv2.imshow("imagen", imagen)
+    cv2.imshow("unknown area", unknown)
+    cv2.imshow("fondo segurp", sure_bg)
+    cv2.imshow("frente seguro", sure_fg)
+    
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+    '''figura = plt.figure()
+    axis1 = figura.add_subplot(1)
+    axis1.'''
+
+def watershed2(image):
+    distance = ndi.distance_transform_edt(image)
+    coords = peak_local_max(distance, footprint=np.ones((3, 3)), labels=image)
+    mask = np.zeros(distance.shape, dtype=bool)
+    mask[tuple(coords.T)] = True
+    markers, _ = ndi.label(mask)
+    labels = watershed(-distance, markers, mask=image)
+
+    fig, axes = plt.subplots(ncols=3, figsize=(9, 3), sharex=True, sharey=True)
+    ax = axes.ravel()
+
+    ax[0].imshow(image, cmap=plt.cm.gray)
+    ax[0].set_title('Overlapping objects')
+    ax[1].imshow(-distance, cmap=plt.cm.gray)
+    ax[1].set_title('Distances')
+    ax[2].imshow(labels, cmap=plt.cm.nipy_spectral)
+    ax[2].set_title('Separated objects')
+
+    for a in ax:
+        a.set_axis_off()
+
+    fig.tight_layout()
+    plt.show()
 
 if __name__ == "__main__":
     main()
