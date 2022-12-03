@@ -81,6 +81,8 @@ def selPadresRuleta(poblacion):
         acumulada += frecuencia
         T.append(acumulada)
     
+#observacion: hay que encerrar este bloque en un bucle para asegurarnos de que el algoritmo no escoja al mismo individuo como padre
+#observacion2 : puede ser tambien en lugar del bucle, ir sacando a los individuos que ya fueron seleccionados, pero hay que asegurarse de que la lista de la poblacion sea una copia de la original para evitar que se pierdan los datos de la poblacion real
     #Seleccion del primer padre
     aleatorio = uniform(0,1)
 
@@ -96,7 +98,7 @@ def selPadresRuleta(poblacion):
         if T[i] > aleatorio:
             padres.append(poblacion[i])
             break
-
+#--------------------------------------------------------------------------------------------------
 
     return padres
 
@@ -266,7 +268,7 @@ def main():
         if uniform(0,1) < pc:
             poblacion = remplazoGeneracional(poblacion)
         else:
-            print("La poblacion pasa a la siguiente generacion")
+            print("La poblacion pasa a la siguiente generacion") #<- observacion: la generacion no deberia de pasar completa, hay que hacer que pasen tanto hijos, como padres, asi que tenemos que aplicar la probabilidad de cruza por cada par de padres
             poblacion = poblacion
     
     print("Esta es la poblacion que quedo 10 generaciones despues: \n\n", np.matrix(poblacion))
