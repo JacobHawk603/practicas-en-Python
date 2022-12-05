@@ -20,9 +20,15 @@ class test_set:
 		self.y_test = y_test
 
 class data_set:
-	def __init__(self, validation_set, test_set):
+	def __init__(self, validation_set, test_set, train_test):
 		self.validation_set = validation_set
 		self.test_set = test_set
+		self.train_test = train_test
+
+class train_set:
+	def __init__(self, X_train, Y_train):
+		self.X_train = X_train
+		self.Y_train = Y_train
 
 def generate_train_test(file_name, pliegues):
 	#primero generamos un archivo que se contiene el dataset mezclado
@@ -93,11 +99,14 @@ def crearConjuntosDeValidacion(pliegues, X, y):
 		print('X_test_v',  *X_test_v,  '\ny_test_v', *y_test_v)'''
 	
 	#Almacena el conjunto de prueba
-	my_test_set = test_set(X_test, y_test)	
+	my_test_set = test_set(X_test, y_test)
+
+	#almacenamos el conjunto de entrenamiento sin los k pliegues
+	my_train_set = train_set(X_train, y_train)
 	
 	#Guarda el dataset con los pliegues del conjunto de validación y el conjunto de pruebas
-	my_data_set = data_set(validation_sets, my_test_set) 
-	return (my_data_set)
+	my_data_set = data_set(validation_sets, my_test_set, my_train_set) 
+	return my_data_set
 
 	#guardamos los conjuntos de validacion y prueba en la clase my_data_set
 	validation_sets = []

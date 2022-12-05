@@ -25,9 +25,16 @@ class test_set:
 		self.y_test = y_test
 
 class data_set:
-	def __init__(self, validation_set, test_set):
-		self.validation_set = validation_set
-		self.test_set = test_set
+    def __init__(self, validation_set, test_set, train_set):
+        self.validation_set = validation_set
+        self.test_set = test_set
+        self.train_set = train_set
+
+class train_set:
+	def __init__(self, X_train, y_train):
+		self.X_train = X_train
+		self.y_train = y_train
+
 
 
 mse_list = []
@@ -113,7 +120,7 @@ my_data_set = manejoDT.generate_train_test("./cal_housing.csv", 10)
 
 #guardamos cada una de las diemnsiones del arreglo de x
 
-for dimensiones in my_data_set.test_set.X_test:
+for dimensiones in my_data_set.train_test.X_train:
     longitud.append(dimensiones[0])
     latitud.append(dimensiones[1])
     housingMedianAge.append(dimensiones[2])
@@ -124,10 +131,10 @@ for dimensiones in my_data_set.test_set.X_test:
     gananciaMedia.append(dimensiones[7])
 
 #Guarda el dataset en formato csv
-np.savetxt("data_test.csv", my_data_set.test_set.X_test, delimiter=",", fmt="%s",
+np.savetxt("data_test.csv", my_data_set.train_test.X_train, delimiter=",", fmt="%s",
         header="x")
 
-np.savetxt("target_test.csv", my_data_set.test_set.y_test, delimiter=",", fmt="%s",
+np.savetxt("target_test.csv", my_data_set.train_test.Y_train, delimiter=",", fmt="%s",
         header="y", comments="")
 
 
@@ -172,14 +179,14 @@ ax8.set(xlabel="ganancia promedio", ylabel="costo promedio de la casa")
 
 plt.plot()
 
-ax1.scatter(latitud,my_data_set.test_set.y_test)
-ax2.scatter(longitud,my_data_set.test_set.y_test)
-ax3.scatter(housingMedianAge,my_data_set.test_set.y_test)
-ax4.scatter(CuartosTotales,my_data_set.test_set.y_test)
-ax5.scatter(camasTotales,my_data_set.test_set.y_test)
-ax6.scatter(poblacion,my_data_set.test_set.y_test)
-ax7.scatter(houseHolds,my_data_set.test_set.y_test)
-ax8.scatter(gananciaMedia,my_data_set.test_set.y_test)
+ax1.scatter(latitud,my_data_set.train_test.Y_train)
+ax2.scatter(longitud,my_data_set.train_test.Y_train)
+ax3.scatter(housingMedianAge,my_data_set.train_test.Y_train)
+ax4.scatter(CuartosTotales,my_data_set.train_test.Y_train)
+ax5.scatter(camasTotales,my_data_set.train_test.Y_train)
+ax6.scatter(poblacion,my_data_set.train_test.Y_train)
+ax7.scatter(houseHolds,my_data_set.train_test.Y_train)
+ax8.scatter(gananciaMedia,my_data_set.train_test.Y_train)
 plt.show()
 
 #plt.plot(longitud, y_pred, color='r')
@@ -192,6 +199,7 @@ plt.show()
 #encerraremos este proceso en bucle para obtener todos los conjuntos de validacion de los k pliegues
 contador = 0
 
+r2_list.clear()
 for val_set in my_data_set.validation_set:
 
     polynomial_features= PolynomialFeatures(degree=1)
@@ -199,17 +207,17 @@ for val_set in my_data_set.validation_set:
     
     #model = LinearRegression()
     #model.fit(val_set.X_train, val_set.y_train)
-    x_poly_robust_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
-    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.0001, max_iter= 100000)
-    regr.fit(x_poly_robust_scaler, val_set.y_train)
-    y_poly_pred = regr.predict(x_poly_robust_scaler)
+    #x_poly_robust_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
+    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.0000001, max_iter= 100000000)
+    regr.fit(x_poly, val_set.y_train)
+    y_poly_pred = regr.predict(x_poly)
     mse = mean_squared_error(val_set.y_train, y_poly_pred)
     r2 = r2_score(val_set.y_train, y_poly_pred)
 
     mse_list.append(mse)
     r2_list.append(r2)
 
-    print("pliegue: ", contador)
+    #print("pliegue: ", contador)
     contador+=1
 
 
@@ -220,14 +228,81 @@ sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
 x_sorted, y_poly_pred = zip(*sorted_zip)
 #print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
 #plt.plot(x_sorted, y_poly_pred, color='b')
-print ('Regresión polinomial estocástico grado 1 sin escalar\nmse: {} r2: {}'.format(mse, np.mean(r2_list)))
+#plt.show()
+print ('Regresión polinomial estocástico grado 1 sin escalar\nmse: {} r2: {}'.format(np.mean(mse), np.mean(r2_list)))
 
-'''r2_list.clear()
+r2_list.clear()
 for val_set in my_data_set.validation_set:
 
     polynomial_features= PolynomialFeatures(degree=2)
     x_poly = polynomial_features.fit_transform(val_set.X_train)
-    x_poly_robust_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
+    #x_poly_robust_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
+    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00000001, max_iter= 10000000)
+    regr.fit(x_poly, val_set.y_train)
+    y_poly_pred = regr.predict(x_poly)
+    mse = mean_squared_error(val_set.y_train, y_poly_pred)
+    r2 = r2_score(val_set.y_train, y_poly_pred)
+
+    mse_list.append(mse)
+    r2_list.append(r2)
+
+    #print("pliegue: ", contador)
+    contador+=1
+
+
+# ~ #Ajustes para que la curva trazada se vea correctamente
+sort_axis = operator.itemgetter(0)
+sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
+#print (tuple(sorted_zip))
+x_sorted, y_poly_pred = zip(*sorted_zip)
+#print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
+#plt.plot(x_sorted, y_poly_pred, color='b')
+print ('Regresión polinomial estocástico grado 2 Sin escalar\nmse: {} r2: {}'.format(np.mean(mse), np.mean(r2_list)))
+
+r2_list.clear()
+for val_set in my_data_set.validation_set:
+
+    polynomial_features= PolynomialFeatures(degree=3)
+    x_poly = polynomial_features.fit_transform(val_set.X_train)
+    #x_poly_robust_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
+    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00000001, max_iter= 10000000)
+    regr.fit(x_poly, val_set.y_train)
+    y_poly_pred = regr.predict(x_poly)
+    mse = mean_squared_error(val_set.y_train, y_poly_pred)
+    r2 = r2_score(val_set.y_train, y_poly_pred)
+
+    mse_list.append(mse)
+    r2_list.append(r2)
+
+    #print("pliegue: ", contador)
+    contador+=1
+
+
+# ~ #Ajustes para que la curva trazada se vea correctamente
+sort_axis = operator.itemgetter(0)
+sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
+#print (tuple(sorted_zip))
+x_sorted, y_poly_pred = zip(*sorted_zip)
+#print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
+#plt.plot(x_sorted, y_poly_pred, color='b')
+print ('Regresión polinomial estocástico grado 3 Sin escalar\nmse: {} r2: {}'.format(np.mean(mse), np.mean(r2_list)))
+
+print("\n\n")
+
+#Ahora aplicamos el mismo procedimiento para el escalado simple y para el escalado estandar----------------------------------------
+
+
+contador = 0
+
+r2_list.clear()
+for val_set in my_data_set.validation_set:
+
+    polynomial_features= PolynomialFeatures(degree=1)
+    x_poly = polynomial_features.fit_transform(val_set.X_train)
+    
+    #model = LinearRegression()
+    #model.fit(val_set.X_train, val_set.y_train)
+    x_poly_robust_scaler = preprocessing.RobustScaler().fit_transform(x_poly)
     regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00001, max_iter= 10000)
     regr.fit(x_poly_robust_scaler, val_set.y_train)
     y_poly_pred = regr.predict(x_poly_robust_scaler)
@@ -237,7 +312,7 @@ for val_set in my_data_set.validation_set:
     mse_list.append(mse)
     r2_list.append(r2)
 
-    print("pliegue: ", contador)
+    #print("pliegue: ", contador)
     contador+=1
 
 
@@ -248,15 +323,16 @@ sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
 x_sorted, y_poly_pred = zip(*sorted_zip)
 #print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
 #plt.plot(x_sorted, y_poly_pred, color='b')
-print ('Regresión polinomial estocástico grado 2 escalado estandar\nmse: {} r2: {}'.format(mse, np.mean(r2_list)))
+#plt.show()
+print ('Regresión polinomial estocástico grado 1 Escalado Robusto\nmse: {} r2: {}'.format(np.mean(mse), np.mean(r2_list)))
 
 r2_list.clear()
 for val_set in my_data_set.validation_set:
 
-    polynomial_features= PolynomialFeatures(degree=3)
+    polynomial_features= PolynomialFeatures(degree=2)
     x_poly = polynomial_features.fit_transform(val_set.X_train)
-    x_poly_robust_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
-    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.000001, max_iter= 10000)
+    x_poly_robust_scaler = preprocessing.RobustScaler().fit_transform(x_poly)
+    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00001, max_iter= 10000)
     regr.fit(x_poly_robust_scaler, val_set.y_train)
     y_poly_pred = regr.predict(x_poly_robust_scaler)
     mse = mean_squared_error(val_set.y_train, y_poly_pred)
@@ -265,7 +341,7 @@ for val_set in my_data_set.validation_set:
     mse_list.append(mse)
     r2_list.append(r2)
 
-    print("pliegue: ", contador)
+    #print("pliegue: ", contador)
     contador+=1
 
 
@@ -276,182 +352,266 @@ sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
 x_sorted, y_poly_pred = zip(*sorted_zip)
 #print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
 #plt.plot(x_sorted, y_poly_pred, color='b')
-print ('Regresión polinomial estocástico grado 3 escalado estandar\nmse: {} r2: {}'.format(mse, np.mean(r2_list)))'''
+print ('Regresión polinomial estocástico grado 2 escalado Robusto\nmse: {} r2: {}'.format(np.mean(mse), np.mean(r2_list)))
 
-'''###########     EXPERIMENT 1
+r2_list.clear()
+for val_set in my_data_set.validation_set:
 
-#Modelo de regresión lineal
-model = LinearRegression()
-model.fit(x, y)
-y_pred = model.predict(x)
+    polynomial_features= PolynomialFeatures(degree=3)
+    x_poly = polynomial_features.fit_transform(val_set.X_train)
+    x_poly_robust_scaler = preprocessing.RobustScaler().fit_transform(x_poly)
+    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00001, max_iter= 10000)
+    regr.fit(x_poly_robust_scaler, val_set.y_train)
+    y_poly_pred = regr.predict(x_poly_robust_scaler)
+    mse = mean_squared_error(val_set.y_train, y_poly_pred)
+    r2 = r2_score(val_set.y_train, y_poly_pred)
 
-plt.figure().add_subplot(1, 2, 1).scatter(longitud,y)
-#plt.scatter(longitud,y)
-#ax2.scatter(latitud,y)
-#ax3.scatter(housingMedianAge,y)
-#ax4.scatter(CuartosTotales,y)
-#ax5.scatter(camasTotales,y)
-#ax6.scatter(poblacion,y)
-#ax7.scatter(houseHolds,y)
-#ax8.scatter(gananciaMedia,y)
-#plt.plot(longitud, y_pred, color='r')
+    mse_list.append(mse)
+    r2_list.append(r2)
 
+    #print("pliegue: ", contador)
+    contador+=1
+
+
+# ~ #Ajustes para que la curva trazada se vea correctamente
+sort_axis = operator.itemgetter(0)
+sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
+#print (tuple(sorted_zip))
+x_sorted, y_poly_pred = zip(*sorted_zip)
+#print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
+#plt.plot(x_sorted, y_poly_pred, color='b')
+print ('Regresión polinomial estocástico grado 3 escalado Robusto\nmse: {} r2: {}'.format(np.mean(mse), np.mean(r2_list)))
+
+print("\n\n")
+
+
+contador = 0
+r2_list.clear()
+
+for val_set in my_data_set.validation_set:
+
+    polynomial_features= PolynomialFeatures(degree=1)
+    x_poly = polynomial_features.fit_transform(val_set.X_train)
+    
+    #model = LinearRegression()
+    #model.fit(val_set.X_train, val_set.y_train)
+    x_poly_stanadar_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
+    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00001, max_iter= 10000)
+    regr.fit(x_poly_stanadar_scaler, val_set.y_train)
+    y_poly_pred = regr.predict(x_poly_stanadar_scaler)
+    mse = mean_squared_error(val_set.y_train, y_poly_pred)
+    r2 = r2_score(val_set.y_train, y_poly_pred)
+
+    mse_list.append(mse)
+    r2_list.append(r2)
+
+    #print("pliegue: ", contador)
+    contador+=1
+
+
+# ~ #Ajustes para que la curva trazada se vea correctamente
+sort_axis = operator.itemgetter(0)
+sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
+#print (tuple(sorted_zip))
+x_sorted, y_poly_pred = zip(*sorted_zip)
+#print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
+#plt.plot(x_sorted, y_poly_pred, color='b')
+#plt.show()
+print ('Regresión polinomial estocástico grado 1 Escalado estandar\nmse: {} r2: {}'.format(np.mean(mse), np.mean(r2_list)))
+
+r2_list.clear()
+for val_set in my_data_set.validation_set:
+
+    polynomial_features= PolynomialFeatures(degree=2)
+    x_poly = polynomial_features.fit_transform(val_set.X_train)
+    x_poly_standar_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
+    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00001, max_iter= 10000)
+    regr.fit(x_poly_standar_scaler, val_set.y_train)
+    y_poly_pred = regr.predict(x_poly_standar_scaler)
+    mse = mean_squared_error(val_set.y_train, y_poly_pred)
+    r2 = r2_score(val_set.y_train, y_poly_pred)
+
+    mse_list.append(mse)
+    r2_list.append(r2)
+
+    #print("pliegue: ", contador)
+    contador+=1
+
+
+# ~ #Ajustes para que la curva trazada se vea correctamente
+sort_axis = operator.itemgetter(0)
+sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
+#print (tuple(sorted_zip))
+x_sorted, y_poly_pred = zip(*sorted_zip)
+#print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
+#plt.plot(x_sorted, y_poly_pred, color='b')
+print ('Regresión polinomial estocástico grado 2 escalado estandar\nmse: {} r2: {}'.format(np.mean(mse), np.mean(r2_list)))
+
+r2_list.clear()
+for val_set in my_data_set.validation_set:
+
+    polynomial_features= PolynomialFeatures(degree=3)
+    x_poly = polynomial_features.fit_transform(val_set.X_train)
+    x_poly_standar_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
+    regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00001, max_iter= 10000)
+    regr.fit(x_poly_standar_scaler, val_set.y_train)
+    y_poly_pred = regr.predict(x_poly_standar_scaler)
+    mse = mean_squared_error(val_set.y_train, y_poly_pred)
+    r2 = r2_score(val_set.y_train, y_poly_pred)
+
+    mse_list.append(mse)
+    r2_list.append(r2)
+
+    #print("pliegue: ", contador)
+    contador+=1
+
+
+print ('Regresión polinomial estocástico grado 3 escalado estandar\nmse: {} r2: {}'.format(np.mean(mse), np.mean(r2_list)))
+
+#---------------------------------------------------------------------------------------------------------------------------------
+
+#ahora realizamos el entrenamiento del algoritmo con la regresion polinomial de grado 3 escalado estandar-------------------------
+
+
+
+polynomial_features= PolynomialFeatures(degree=3)
+x_poly = polynomial_features.fit_transform(my_data_set.train_test.X_train)
+x_poly_standar_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
+regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00001, max_iter= 10000)
+regr.fit(x_poly_standar_scaler, my_data_set.train_test.Y_train)
+y_poly_pred = regr.predict(x_poly_standar_scaler)
+mse = mean_squared_error(my_data_set.train_test.Y_train, y_poly_pred)
+r2 = r2_score(my_data_set.train_test.Y_train, y_poly_pred)
+
+#print("pliegue: ", contador)
+
+# ~ #Ajustes para que la curva trazada se vea correctamente
+sort_axis = operator.itemgetter(0)
+sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
+#print (tuple(sorted_zip))
+x_sorted, y_poly_pred = zip(*sorted_zip)
+#print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
+#plt.plot(x_sorted, y_poly_pred, color='b')
+print ('\n\nRegresión polinomial estocástico grado 3 escalado estandar para el conjunto de entrenamiento\nmse: {} r2: {}'.format(mse, r2))
+
+#volvemos a guardar los datos por columnas:
+
+longitud.clear()
+latitud.clear()
+housingMedianAge.clear()
+CuartosTotales.clear()
+camasTotales.clear()
+poblacion.clear()
+houseHolds.clear()
+gananciaMedia.clear()
+
+for dimensiones in x_sorted:
+    longitud.append(dimensiones[0])
+    latitud.append(dimensiones[1])
+    housingMedianAge.append(dimensiones[2])
+    CuartosTotales.append(dimensiones[3])
+    camasTotales.append(dimensiones[4])
+    poblacion.append(dimensiones[5])
+    houseHolds.append(dimensiones[6])
+    gananciaMedia.append(dimensiones[7])
+
+#print("lo que hay en longitud: ", longitud)
+#exit(0)
+
+#plt.plot(x_sorted, y_poly_pred, color='r')
 #plt.show()
 
-print(pd.DataFrame({'x': longitud, 'Predicted': y_pred}))
+fig = plt.figure()
 
-#Cálculo del error cuadrado medio y r2
-mse = mean_squared_error(y, y_pred)
-r2 = r2_score(y, y_pred)
-print ('\n Regresión lineal\nmse: {} r2: {}'.format(mse, r2), '\n')
-mse_list.append(mse)
-r2_list.append(r2)
+ax1 = fig.add_subplot(3, 3, 1)
+ax1.set_title("vs longitud")
+ax1.set(xlabel="longitud", ylabel="costo promedio de la casa")
 
+ax2 = fig.add_subplot(3, 3, 2)
+ax2.set_title("vs latitud")
+ax2.set(xlabel="latitud", ylabel="costo promedio de la casa")
 
-###########     EXPERIMENT 2
+ax3 = fig.add_subplot(3,3,3)
+ax3.set_title("vs antiguedad romedio")
+ax3.set(xlabel="antiguedad romedio", ylabel="costo promedio de la casa")
 
-#Conversión de las variables de la ecuación original a polinomio de grado 2
-polynomial_features= PolynomialFeatures(degree=2)
-x_poly = polynomial_features.fit_transform(x)
-print ('\n x_poly', x_poly)
+ax4 = fig.add_subplot(3,3,4)
+ax4.set_title("vs habitaciones")
+ax4.set(xlabel="habitaciones", ylabel="costo promedio de la casa")
 
-# ~ #Modelo de regresión polinomial
-model_poly = LinearRegression()
-model_poly.fit(x_poly, y)
-y_poly_pred = model_poly.predict(x_poly)
-print('y_poly_pred {}'.format(y_poly_pred))
+ax5 = fig.add_subplot(3,3,5)
+ax5.set_title("vs camas")
+ax5.set(xlabel="camas", ylabel="costo promedio de la casa")
 
-# ~ #Cálculo del error cuadrado medio y r2
-mse = mean_squared_error(y, y_poly_pred)
-r2 = r2_score(y, y_poly_pred)
-mse_list.append(mse)
-r2_list.append(r2)
+ax6 = fig.add_subplot(3,3,6)
+ax6.set_title("vs poblacion")
+ax6.set(xlabel="poblacion", ylabel="costo promedio de la casa")
 
-#plt.plot(x, y_poly_pred, color='g')
-print(pd.DataFrame({'x': x, 'Predicted': y_poly_pred}))
-print ('\nRegresión polinomial grado 2\nmse: {} r2: {}'.format(mse, r2),'\n')
+ax7 = fig.add_subplot(3,3,7)
+ax7.set_title("vs househods")
+ax7.set(xlabel="households", ylabel="costo promedio de la casa")
 
+ax8 = fig.add_subplot(3,3,8)
+ax8.set_title("vs ganancia promedio")
+ax8.set(xlabel="ganancia promedio", ylabel="costo promedio de la casa")
 
-
-#Ajustes para que la curva trazada se vea correctamente
-sort_axis = operator.itemgetter(0)
-sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
-print (tuple(sorted_zip))
+sorted_zip = sorted(zip(latitud,y_poly_pred), key=sort_axis)
 x_sorted, y_poly_pred = zip(*sorted_zip)
-print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
-#plt.plot(x_sorted, y_poly_pred, color='g')
-print ('\nRegresión polinomial grado 2\nmse: {} r2: {}'.format(mse, r2),'\n')
+ax1.plot(x_sorted, y_poly_pred, color='r')
 
-# ~ ###########     EXPERIMENT 3
+sorted_zip = sorted(zip(longitud,y_poly_pred), key=sort_axis)
+x_sorted, y_poly_pred = zip(*sorted_zip)
+ax2.plot(x_sorted, y_poly_pred, color='r')
 
-# ~ # Modelo de regresión polinomial grado 3
+sorted_zip = sorted(zip(housingMedianAge,y_poly_pred), key=sort_axis)
+x_sorted, y_poly_pred = zip(*sorted_zip)
+ax3.plot(x_sorted, y_poly_pred, color='r')
+
+sorted_zip = sorted(zip(CuartosTotales,y_poly_pred), key=sort_axis)
+x_sorted, y_poly_pred = zip(*sorted_zip)
+ax4.plot(x_sorted, y_poly_pred, color='r')
+
+sorted_zip = sorted(zip(camasTotales,y_poly_pred), key=sort_axis)
+x_sorted, y_poly_pred = zip(*sorted_zip)
+ax5.plot(x_sorted, y_poly_pred, color='r')
+
+sorted_zip = sorted(zip(poblacion,y_poly_pred), key=sort_axis)
+x_sorted, y_poly_pred = zip(*sorted_zip)
+ax6.plot(x_sorted, y_poly_pred, color='r')
+
+sorted_zip = sorted(zip(houseHolds,y_poly_pred), key=sort_axis)
+x_sorted, y_poly_pred = zip(*sorted_zip)
+ax7.plot(x_sorted, y_poly_pred, color='r')
+
+sorted_zip = sorted(zip(gananciaMedia,y_poly_pred), key=sort_axis)
+x_sorted, y_poly_pred = zip(*sorted_zip)
+ax8.plot(x_sorted, y_poly_pred, color='r')
+plt.show()
+
+
+#---------------------------------------------------------------------------------------------------------------------------------
+
+#realizamos la predicción en el conjunto de prueba--------------------------------------------------------------------------------
+
 polynomial_features= PolynomialFeatures(degree=3)
-x_poly = polynomial_features.fit_transform(x)
-model_poly = LinearRegression()
-model_poly.fit(x_poly, y)
-y_poly_pred = model_poly.predict(x_poly)
-
-
-
-mse = mean_squared_error(y, y_poly_pred)
-r2 = r2_score(y, y_poly_pred)
-mse_list.append(mse)
-r2_list.append(r2)
+x_poly = polynomial_features.fit_transform(my_data_set.test_set.X_test)
+x_poly_standar_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
+regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.00001, max_iter= 10000)
+regr.fit(x_poly_standar_scaler, my_data_set.test_set.y_test)
+y_poly_pred = regr.predict(x_poly_standar_scaler)
 
 # ~ #Ajustes para que la curva trazada se vea correctamente
 sort_axis = operator.itemgetter(0)
 sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
-print (tuple(sorted_zip))
+#print (tuple(sorted_zip))
 x_sorted, y_poly_pred = zip(*sorted_zip)
-print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
-#plt.plot(x_sorted, y_poly_pred, color='b')
+#print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
 
-print ('\nRegresión polinomial grado 3\nmse: {} r2: {}'.format(mse, r2), '\n')
+#print("lo que hay en x_sorted: \n\n", x_sorted)
 
-# ~ ###########     EXPERIMENT 3.1
+#---------------------------------------------------------------------------------------------------------------------------
 
-# ~ ####Escalado de los datos####
-# ~ #Standard Scaler
-x_poly_standard_scaler = preprocessing.StandardScaler().fit_transform(x_poly)
-print (x_poly_standard_scaler)
-model_poly.fit(x_poly_standard_scaler, y)
-y_poly_pred = model_poly.predict(x_poly_standard_scaler)
+print("valores de y test: \n\n", my_data_set.test_set.y_test)
 
-
-mse = mean_squared_error(y, y_poly_pred)
-r2 = r2_score(y, y_poly_pred)
-mse_list.append(mse)
-r2_list.append(r2)
-
-
-# ~ #Ajustes para que la curva trazada se vea correctamente
-sort_axis = operator.itemgetter(0)
-sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
-print (tuple(sorted_zip))
-x_sorted, y_poly_pred = zip(*sorted_zip)
-print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
-#plt.plot(x_sorted, y_poly_pred, color='b')
-print ('\nRegresión polinomial grado 3 escalado estándar\nmse: {} r2: {}'.format(mse, r2),'\n')
-
-# ~ ###########     EXPERIMENT 3.2
-
-x_poly_robust_scaler = preprocessing.RobustScaler().fit_transform(x_poly)
-model_poly.fit(x_poly_robust_scaler, y)
-y_poly_pred = model_poly.predict(x_poly_robust_scaler)
-mse = mean_squared_error(y, y_poly_pred)
-r2 = r2_score(y, y_poly_pred)
-print ('Regresión polinomial grado 3 escalado robusto\nmse: {} r2: {}'.format(mse, r2))
-mse_list.append(mse)
-r2_list.append(r2)
-
-
-# ~ #Ajustes para que la curva trazada se vea correctamente
-sort_axis = operator.itemgetter(0)
-sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
-print (tuple(sorted_zip))
-x_sorted, y_poly_pred = zip(*sorted_zip)
-print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
-#plt.plot(x_sorted, y_poly_pred, color='b')
-print ('\nRegresión polinomial grado 3 escalado robusto\nmse: {} r2: {}'.format(mse, r2),'\n')
-
-
-
-# ~ ###########     EXPERIMENT 4
-polynomial_features= PolynomialFeatures(degree=3)
-x_poly = polynomial_features.fit_transform(x)
-x_poly_robust_scaler = preprocessing.RobustScaler().fit_transform(x_poly)
-regr = SGDRegressor(learning_rate = 'constant', eta0 = 0.001, max_iter= 10000)
-regr.fit(x_poly_robust_scaler, y)
-y_poly_pred = regr.predict(x_poly_robust_scaler)
-mse = mean_squared_error(y, y_poly_pred)
-r2 = r2_score(y, y_poly_pred)
-
-mse_list.append(mse)
-r2_list.append(r2)
-
-
-# ~ #Ajustes para que la curva trazada se vea correctamente
-sort_axis = operator.itemgetter(0)
-sorted_zip = sorted(zip(x,y_poly_pred), key=sort_axis)
-print (tuple(sorted_zip))
-x_sorted, y_poly_pred = zip(*sorted_zip)
-print(pd.DataFrame({'x': x_sorted, 'Predicted': y_poly_pred}))
-#plt.plot(x_sorted, y_poly_pred, color='b')
-print ('Regresión polinomial estocástico grado 3 escalado robusto\nmse: {} r2: {}'.format(mse, r2))
-
-
-# initialize data of lists.
-data = {'mse':mse_list,
-        'r2':r2_list}
- 
-# Creates pandas DataFrame.
-df = pd.DataFrame(data, index =['Regresión lineal',
-                                'Regresión polinomial grado 2',
-                                'Regresión polinomial grado 3',
-                                'Regresión polinomial grado 3 escalado estándar',
-                                'Regresión polinomial grado 3 escalado robusto',
-                                'Regresión polinomial estocástico grado 3 escalado robusto'])
-
-print(df,'\n')
-
-'''
+for i in range(len(my_data_set.test_set.y_test)):
+    print("valor predecido por el algoritmo: {}".format(y_poly_pred[i]))
