@@ -112,8 +112,16 @@ def knn(data, k):
     centroids = data.groupby('centroid').agg('mean').reset_index(drop = True)
 
     colors = {0:'red', 1:'blue', 2:'green'}
-    plt.scatter(data.iloc[:,0], data.iloc[:,1],  marker = 'o', c = data['centroid'].apply(lambda x: colors[x]), alpha = 0.5)
-    plt.scatter(centroids.iloc[:,0], centroids.iloc[:,1],  marker = 'o', s=300, c = centroids.index.map(lambda x: colors[x]))
+
+    figure = plt.figure()
+    ax = figure.add_subplot(projection="3d")
+
+    ax.scatter(data.iloc[:,0], data.iloc[:,1], data.iloc[:,2],  marker = 'o', alpha = 0.5) #<- c = data['centroid'].apply(lambda x: colors[x])
+    ax.scatter(centroids.iloc[:,0], centroids.iloc[:,1], centroids.iloc[:,2],  marker = 'o', s=300)
+
+    ax.set_xlabel('R')
+    ax.set_ylabel('G')
+    ax.set_zlabel('B')
     plt.show()
 
     return (data['centroid'], iter_error, centroids)
