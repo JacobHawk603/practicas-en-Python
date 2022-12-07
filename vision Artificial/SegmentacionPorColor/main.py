@@ -57,6 +57,8 @@ def main():
     print(dfClusters)
     np.savetxt("./imagenClusterizada.csv", df, delimiter=',')
     #np.savetxt("./dfClusters.csv", dfClusters, delimiter=',')
+    clustersRGB = open("./clusters.txt", "w", encoding="utf8")
+    clustersRGB.write(str(dfClusters))
 
     #recuperamos los clusters
     clusters = df['centroid'].values
