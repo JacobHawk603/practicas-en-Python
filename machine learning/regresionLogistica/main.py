@@ -11,13 +11,13 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 #Lee el corpus original del archivo de entrada y lo pasa a una DataFrame
 df = pd.read_csv('./breast-cancer.csv', sep=',', engine='python')
-X = df.drop(['diagnosis'],axis=1).values   
+X = df.drop(['diagnosis','id'],axis=1).values   
 y = df['diagnosis'].values
 #plt.scatter(X,y)
 	
 #Separa el corpus cargado en el DataFrame en el 90% para entrenamiento y el 10% para pruebas
 X_train, X_test, y_train, y_test = \
-train_test_split(X, y, test_size=0.2, shuffle = True, random_state=0)	
+train_test_split(X, y, test_size=0.1, shuffle = True, random_state=0)	
 clf = LogisticRegression()
 clf.fit(X_train, y_train)
 y_pred = clf.predict(X_test) #la clase predicha
