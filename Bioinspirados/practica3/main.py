@@ -2,7 +2,7 @@ import random
 
 class particula:
     pbest = [1000,1000,2000000] #<- [valorX, valorY, aptitud]
-    velocidad = [random.uniform(-10, 10), random.uniform(-10, 10)] #<- inicializar velocidad con distribucion uniforme vi = U(-|bup-blo|, |bup-blo|) = (-|5-(-5)|, |5-(-5)|)
+    velocidad = [random.uniform(-5, 5), random.uniform(-5, 5)] #<- inicializar velocidad con distribucion uniforme usando los parametros para x y y
 
     def __init__(self, valorX = 0, valorY = 0):
         '''por defecto se inicializa con (0,0)'''
@@ -27,17 +27,17 @@ class particula:
         return self.pbest
     
 
-    def actualizarPosicion(self, a, b1, b2, r1, r2, lbest):
+    def actualizarPosicion(self, a, b1, b2, r1, r2, gbest):
         '''
         actualiza la posicion de la particula
         a:      inercia
         b1 :    factor de aprendizaje (influencia propia)
         b2 :    factor de aprendizaje (influencia social)
         r1, r2 :Valores aleatorios con uniform(0,1)
-        lbest: mejor particula de la poblacion
+        gbest: mejor particula que la poblacion ha tenido
         '''
-        nuevaVelocidad =[a*self.velocidad[0] + b1*r1*(self.p_best()[0] - self.valorX) + b2*r2*(lbest.valorX - self.valorX),
-                        a*self.velocidad[1] + b1*r1*(self.p_best()[1] - self.valorY) + b2*r2*(lbest.valorY - self.valorY)]
+        nuevaVelocidad =[a*self.velocidad[0] + b1*r1*(self.p_best()[0] - self.valorX) + b2*r2*(gbest[0] - self.valorX),
+                        a*self.velocidad[1] + b1*r1*(self.p_best()[1] - self.valorY) + b2*r2*(gbest[1]- self.valorY)]
 
         self.valorX = nuevaVelocidad[0]
         self.valorY = nuevaVelocidad[1]
@@ -81,7 +81,7 @@ class poblacion:
 
     def l_best(self):
         '''buscamos minimizar la funcion objetivo, asi que este metodo retorna la aptitud mejor entre la poblacion'''
-        lbest = particula(10000) #<- lo inicializamos con un valor muy grande, ya que queremos minimizarlo, y eso ocurrira desde la primer iteracion
+        lbest = particula(10000) #<- lo inicializamos con un valor muy grande, ya que queremos minimizarlo, y eso se vera reflejado desde la primer iteracion
 
         for individuo in self.individuos:
 
@@ -92,10 +92,10 @@ class poblacion:
         
         return lbest
     
-    def actualizarPoblacion(self):
+    def actualizarPoblacion(self, gbest):
 
         for individuo in self.individuos:
-            individuo.actualizarPosicion(self.a, self.b1, self.b2, self.r1, self.r2, self.l_best())
+            individuo.actualizarPosicion(self.a, self.b1, self.b2, self.r1, self.r2, gbest)
 
 
 def main():
@@ -140,7 +140,7 @@ def main():
 
     for i in range(1, iteraciones):
 
-        miPoblacion.actualizarPoblacion()
+        miPoblacion.actualizarPoblacion(gbest)
 
                
         if gbest[2] > miPoblacion.l_best().aptitud():
