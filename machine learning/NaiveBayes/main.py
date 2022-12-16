@@ -31,20 +31,34 @@ def main():
 
     #obtenemos los datasets con el conjunto de validacion y el de prueba de cada uno de los dataset
     datasetIris = Datasets.generate_train_test("./src/iris.csv", 'species', 3)
-    datasetEmails = Datasets.generate_train_test("./src/emails.csv", 'Prediction', 3)
+
+
+    #para el dataset de los emails, tendremos que trabajarlo manualmente su formato como dataset, debido a que hay que remover columnas del dataset, antes de obtener los pliegues
+
+    dataFrameEmails = pd.read_csv("./src/emails.csv", sep=',', engine='python')
+    sinTarget = dataFrameEmails.drop('Prediction',axis=1)
+    X = sinTarget.drop('Email No.',axis=1).values
+    y = dataFrameEmails['Prediction'].values 		
+
+    datasetEmails = Datasets.crearConjuntosDeValidacion(3, X, y)
 
 
     print("dataset Emails conjunto de validacion:\n\n", datasetEmails.validation_set[0].X_train)
 
     #probemos ahora que pasa al mandar los datasets a sus respectivos metodos
-    iris(datasetIris)
+    #emails(datasetIris)
+
+    emails(datasetEmails)
     return 0
 
 def emails(dataset):
 
+    exactitudPromedio = 0
+    exactitudPromedioSinNormalizar = 0
+    clf = GaussianNB()
+
     for pliegue in dataset.validation_set:
 
-        clf = GaussianNB()
         clf.fit(pliegue.X_train, pliegue.y_train)
 
         y_predict = clf.predict(pliegue.X_train)
@@ -56,29 +70,71 @@ def emails(dataset):
         print (accuracy_score(pliegue.y_train, y_predict))
         print (accuracy_score(pliegue.y_train, y_predict, normalize=False))
 
+        #guardamos la presición obtenida en la variable del promedio
+        exactitudPromedio += accuracy_score(pliegue.y_train, y_predict)
+        exactitudPromedioSinNormalizar += accuracy_score(pliegue.y_train, y_predict, normalize=False)
+
         target_names =clf.classes_
         print (target_names)
 
         print(classification_report(pliegue.y_train, y_predict, target_names=target_names))
         print (confusion_matrix(pliegue.y_train, y_predict, labels=target_names))
 
+    #dividimos la exactitud promedio entre el total de pliegues que estamos usando
 
-    # ~ print ('\n------------Multinomial NB------------')
-    # ~ clf = MultinomialNB()
-    # ~ clf.fit(X, y)
+    exactitudPromedio /= len(dataset.validation_set)
 
-    # ~ y_predict = clf.predict(X)
-    # ~ print (accuracy_score(y, y_predict))
-    # ~ print (accuracy_score(y, y_predict, normalize=False))
+    print("la exactitud promedio es: ", exactitudPromedio)
 
-    # ~ print(classification_report(y, y_predict, target_names=target_names))
-    # ~ cm = confusion_matrix(y, y_predict, labels=target_names)
-    # ~ print (cm)
-    # ~ disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=target_names)
-    # ~ disp.plot()
-    # ~ plt.show()
+
+    #realizamos la prediccion para el conjunto de prueba
+    y_predict_test = clf.predict(dataset.test_set.X_test)
+
+    print("la presicion obtenida en el conjunto de prueba para el gaussiano es: ", accuracy_score(dataset.test_set.y_test, y_predict_test))
+
+
+    #hacemos lo mismo pero con la distribución multinomial
+
+    print ('\n------------Multinomial NB------------')
+    
+    exactitudPromedio = 0
+    exactitudPromedioSinNormalizar = 0
+    clf = MultinomialNB()
+
+    for pliegue in dataset.validation_set:
+        
+        clf.fit(pliegue.X_train, pliegue.y_train)
+
+        y_predict = clf.predict(pliegue.X_train)
+        print (accuracy_score(pliegue.y_train, y_predict))
+        print (accuracy_score(pliegue.y_train, y_predict, normalize=False))
+
+        #guardamos la presición obtenida en la variable del promedio
+        exactitudPromedio += accuracy_score(pliegue.y_train, y_predict)
+        exactitudPromedioSinNormalizar += accuracy_score(pliegue.y_train, y_predict, normalize=False)
+
+        print(classification_report(pliegue.y_train, y_predict, target_names=target_names))
+        cm = confusion_matrix(pliegue.y_train, y_predict, labels=target_names)
+        print (cm)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=target_names)
+        disp.plot()
+        plt.show()
+
+    exactitudPromedio /= len(dataset.validation_set)
+
+    print("la exactitud promedio es: ", exactitudPromedio)
+        
+
+     #realizamos la prediccion para el conjunto de prueba
+    y_predict_test = clf.predict(dataset.test_set.X_test)
+
+    print("la presicion obtenida en el conjunto de prueba para el gaussiano es: ", accuracy_score(dataset.test_set.y_test, y_predict_test))
 
 def iris(dataset):
+
+    exactitudPromedio = 0
+    exactitudPromedioSinNormalizar = 0
+
     for pliegue in dataset.validation_set:
 
         clf = GaussianNB()
@@ -93,12 +149,19 @@ def iris(dataset):
         print (accuracy_score(pliegue.y_train, y_predict))
         print (accuracy_score(pliegue.y_train, y_predict, normalize=False))
 
+        exactitudPromedio += accuracy_score(pliegue.y_train, y_predict)
+        exactitudPromedioSinNormalizar += accuracy_score(pliegue.y_train, y_predict, normalize=False)
+
         target_names =clf.classes_
         print (target_names)
 
         print(classification_report(pliegue.y_train, y_predict, target_names=target_names))
         print (confusion_matrix(pliegue.y_train, y_predict, labels=target_names))
 
+
+    exactitudPromedio /= len(dataset.validation_set)
+
+    print("la exactitud promedio es: ", exactitudPromedio)
 
     # ~ print ('\n------------Multinomial NB------------')
     # ~ clf = MultinomialNB()
