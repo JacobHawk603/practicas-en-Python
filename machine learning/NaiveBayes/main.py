@@ -46,12 +46,12 @@ def main():
     print("dataset Emails conjunto de validacion:\n\n", datasetEmails.validation_set[0].X_train)
 
     #probemos ahora que pasa al mandar los datasets a sus respectivos metodos
-    #emails(datasetIris)
+    clasificar(datasetIris)
 
-    emails(datasetEmails)
+    #clasificar(datasetEmails)  <- se puede descomentar para probar, pero hay que eliminar el atributo de target names del metodo clasification_report
     return 0
 
-def emails(dataset):
+def clasificar(dataset):
 
     exactitudPromedio = 0
     exactitudPromedioSinNormalizar = 0
@@ -77,8 +77,48 @@ def emails(dataset):
         target_names =clf.classes_
         print (target_names)
 
+        #print(classification_report(pliegue.y_train, y_predict, target_names=target_names)) Hay un problema con target names en el dataset de emails, por eso se creo un aidentica sin este atributo
         print(classification_report(pliegue.y_train, y_predict, target_names=target_names))
+
         print (confusion_matrix(pliegue.y_train, y_predict, labels=target_names))
+
+        print(classification_report(pliegue.y_train, y_predict, target_names=target_names))
+        cm = confusion_matrix(pliegue.y_train, y_predict, labels=target_names)
+        print (cm)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=target_names)
+        disp.plot()
+        plt.show()
+
+        print("--------------------conjunto de prueba------------------------------------------")
+
+        clf.fit(pliegue.X_test, pliegue.y_test)
+
+        y_predict = clf.predict(pliegue.X_test)
+        print (y_predict)
+        print (clf.predict_proba(pliegue.X_test))
+        # ~ print (clf.predict_log_proba(X))
+
+        print (accuracy_score(pliegue.y_test, y_predict))
+        print (accuracy_score(pliegue.y_test, y_predict, normalize=False))
+
+        #guardamos la presición obtenida en la variable del promedio
+        exactitudPromedio += accuracy_score(pliegue.y_test, y_predict)
+        exactitudPromedioSinNormalizar += accuracy_score(pliegue.y_test, y_predict, normalize=False)
+
+        target_names =clf.classes_
+        print (target_names)
+
+        #print(classification_report(pliegue.y_test, y_predict, target_names=target_names)) Hay un problema con target names en el dataset de emails, por eso se creo un aidentica sin este atributo
+        print(classification_report(pliegue.y_test, y_predict, target_names=target_names))
+
+        print (confusion_matrix(pliegue.y_test, y_predict, labels=target_names))
+
+        print(classification_report(pliegue.y_test, y_predict, target_names=target_names))
+        cm = confusion_matrix(pliegue.y_test, y_predict, labels=target_names)
+        print (cm)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=target_names)
+        disp.plot()
+        plt.show()
 
     #dividimos la exactitud promedio entre el total de pliegues que estamos usando
 
@@ -106,6 +146,7 @@ def emails(dataset):
         clf.fit(pliegue.X_train, pliegue.y_train)
 
         y_predict = clf.predict(pliegue.X_train)
+        print (y_predict)
         print (accuracy_score(pliegue.y_train, y_predict))
         print (accuracy_score(pliegue.y_train, y_predict, normalize=False))
 
@@ -120,6 +161,26 @@ def emails(dataset):
         disp.plot()
         plt.show()
 
+
+        print("-----------------------prueba--------------------------")
+        clf.fit(pliegue.X_test, pliegue.y_test)
+
+        y_predict = clf.predict(pliegue.X_test)
+        print (y_predict)
+        print (accuracy_score(pliegue.y_test, y_predict))
+        print (accuracy_score(pliegue.y_test, y_predict, normalize=False))
+
+        #guardamos la presición obtenida en la variable del promedio
+        exactitudPromedio += accuracy_score(pliegue.y_test, y_predict)
+        exactitudPromedioSinNormalizar += accuracy_score(pliegue.y_test, y_predict, normalize=False)
+
+        print(classification_report(pliegue.y_test, y_predict, target_names=target_names))
+        cm = confusion_matrix(pliegue.y_test, y_predict, labels=target_names)
+        print (cm)
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=target_names)
+        disp.plot()
+        plt.show()
+
     exactitudPromedio /= len(dataset.validation_set)
 
     print("la exactitud promedio es: ", exactitudPromedio)
@@ -129,54 +190,6 @@ def emails(dataset):
     y_predict_test = clf.predict(dataset.test_set.X_test)
 
     print("la presicion obtenida en el conjunto de prueba para el gaussiano es: ", accuracy_score(dataset.test_set.y_test, y_predict_test))
-
-def iris(dataset):
-
-    exactitudPromedio = 0
-    exactitudPromedioSinNormalizar = 0
-
-    for pliegue in dataset.validation_set:
-
-        clf = GaussianNB()
-        clf.fit(pliegue.X_train, pliegue.y_train)
-
-        y_predict = clf.predict(pliegue.X_train)
-        print ('------------Gaussian NB------------')
-        print (y_predict)
-        print (clf.predict_proba(pliegue.X_train))
-        # ~ print (clf.predict_log_proba(X))
-
-        print (accuracy_score(pliegue.y_train, y_predict))
-        print (accuracy_score(pliegue.y_train, y_predict, normalize=False))
-
-        exactitudPromedio += accuracy_score(pliegue.y_train, y_predict)
-        exactitudPromedioSinNormalizar += accuracy_score(pliegue.y_train, y_predict, normalize=False)
-
-        target_names =clf.classes_
-        print (target_names)
-
-        print(classification_report(pliegue.y_train, y_predict, target_names=target_names))
-        print (confusion_matrix(pliegue.y_train, y_predict, labels=target_names))
-
-
-    exactitudPromedio /= len(dataset.validation_set)
-
-    print("la exactitud promedio es: ", exactitudPromedio)
-
-    # ~ print ('\n------------Multinomial NB------------')
-    # ~ clf = MultinomialNB()
-    # ~ clf.fit(X, y)
-
-    # ~ y_predict = clf.predict(X)
-    # ~ print (accuracy_score(y, y_predict))
-    # ~ print (accuracy_score(y, y_predict, normalize=False))
-
-    # ~ print(classification_report(y, y_predict, target_names=target_names))
-    # ~ cm = confusion_matrix(y, y_predict, labels=target_names)
-    # ~ print (cm)
-    # ~ disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=target_names)
-    # ~ disp.plot()
-    # ~ plt.show()
 
 
 if __name__ ==  "__main__":

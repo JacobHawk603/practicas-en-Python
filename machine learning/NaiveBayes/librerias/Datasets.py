@@ -68,7 +68,7 @@ def crearConjuntosDeValidacion(pliegues, X, y):
 	
 	#Crea pliegues para la validación cruzada
 	print ('----------------------')
-	print('\n VALIDACION CRUZADA k=2\n')
+	#print('\n VALIDACION CRUZADA k=2\n')
 	validation_sets = []
 	kf = KFold(n_splits=pliegues)
 	c=0
