@@ -78,7 +78,10 @@ def main():
         cNorma2 += dimension**2
 
     
-    print("vector c:\n\n", c)
+    print("vector c:\n\n", cMedios)
+    print("vector c+:\n\n", centroides[1])
+    print("vector c-:\n\n", centroides[0])
+    print("||c||:\n\n", np.sqrt(cNorma2))
 
     #obtuvimos c!!!
 
