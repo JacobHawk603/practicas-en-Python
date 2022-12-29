@@ -1,12 +1,12 @@
 import random
 
 #variables globales---------------------------------------------------------------------------------------------------------------
-sn = 3
+sn = 20
 #---------------------------------------------------------------------------------------------------------------------------------
 
 class fuenteDeAlimento():
     global sn
-    limite = sn #<- SN/2 * D siendo D = 2, ya que D es equivalente a la cantidad de variables a optimizar, y en este caso son x y y
+    limite = 10 #<- SN/2 * D siendo D = 2, ya que D es equivalente a la cantidad de variables a optimizar, y en este caso son x y y
     
     def __init__(self, x, y):
         self.x = x
@@ -48,9 +48,19 @@ class obrera:
         x = self.fuenteComida.x + random.uniform(-1,1) * (self.fuenteComida.x - xk)
         y = self.fuenteComida.y + random.uniform(-1,1) * (self.fuenteComida.y - yk)
 
+        if x>5:
+            x=5
+        elif x<-5:
+            x=-5
+        
+        if y>5:
+            y=5
+        elif y<-5:
+            y=-5
+
         flor = fuenteDeAlimento(x,y)
 
-        if flor.aptitud() > self.fuenteComida.aptitud():
+        if flor.aptitud() < self.fuenteComida.aptitud():
             self.fuenteComida = flor
         else:
             self.fuenteComida.limite -= 1
@@ -126,9 +136,19 @@ class observadora:
         x = self.abejaObrera.abejaObrera.fuenteComida.x + random.uniform(-1,1) * (self.abejaObrera.abejaObrera.fuenteComida.x - xk)
         y = self.abejaObrera.abejaObrera.fuenteComida.y + random.uniform(-1,1) * (self.abejaObrera.abejaObrera.fuenteComida.y - yk)
 
+        if x>5:
+            x=5
+        elif x<-5:
+            x=-5
+        
+        if y>5:
+            y=5
+        elif y<-5:
+            y=-5
+
         flor = fuenteDeAlimento(x,y)    #<- en el caso de la observadora, esta va a ser la solución que representará
 
-        if flor.aptitud() > self.abejaObrera.abejaObrera.fuenteComida.aptitud():
+        if flor.aptitud() < self.abejaObrera.abejaObrera.fuenteComida.aptitud():    #<- la aptitud debe ser menor para que se minimice
             self.abejaObrera.abejaObrera.fuenteComida = flor
         else:
             self.abejaObrera.abejaObrera.fuenteComida.limite -= 1
@@ -154,9 +174,6 @@ class exploradora:
 
 
 class abeja:
-    abejaExploradora = None
-    abejaObservadora = None
-    abejaObrera = None
     
     def __init__(self, rol, fuenteAlimento = None):
         '''
@@ -181,27 +198,29 @@ class abeja:
             self.abejaObrera = None
     
     def cambiarRol(self, rol, fuenteAlimento = None):
-        '''Las abejas en ABC pueden cambiar de rol bajo siertas condiciones, por ello, este metodo permite que la abeja en cuestion pueda cambiar su rol en la colmena'''
+        '''Las abejas en ABC pueden cambiar de rol bajo ciertas condiciones, por ello, este metodo permite que la abeja en cuestion pueda cambiar su rol en la colmena'''
 
         self.rol = rol
 
-        if rol == 0:
+        print("este es el nuevo rol: {}\t y este mi rol: {}".format(rol, self.rol))
+
+        if self.rol == 0:
             self.abejaObrera = obrera(fuenteAlimento)
             self.abejaExploradora = None
             self.abejaObservadora = None
-        elif rol == 1:
-            self.abjeaExploradora = exploradora()
+        elif self.rol == 1:
+            self.abejaExploradora = exploradora()
             self.abejaObrera = None
             self.abejaObservadora = None
-        elif rol == 2:
+        elif self.rol == 2:
             self.abejaObservadora = observadora()
-            self.abjeaExploradora = None
+            self.abejaExploradora = None
             self.abejaObrera = None
 
     def mostrarAbeja(self):
 
         if self.rol == 0:
-            print("rol: {}\t fuente de comida: {}\t aptitud: {}".format("obrera", self.abejaObrera.fuenteComida.mostrarFuente(), self.abejaObrera.fuenteComida.aptitud()))
+            print("rol: {}\t fuente de comida: {}\t aptitud: {}\t limite: {}".format("obrera", self.abejaObrera.fuenteComida.mostrarFuente(), self.abejaObrera.fuenteComida.aptitud(), self.abejaObrera.fuenteComida.limite))
         elif self.rol == 1:
             print("rol: {}\t no tiene fuente de comida asignada".format("exploradora"))
         elif self.rol == 2:
@@ -241,7 +260,7 @@ class colmena:
         clasifica a cada abeja y guarda 3 listas que contienen a cada abeja en su respectivo grupo
         '''
 
-        self.observadoras.clear()
+        self.obreras.clear()
         self.exploradoras.clear()
         self.observadoras.clear()
 
@@ -321,27 +340,74 @@ if __name__ == "__main__":
 
     #fin de la dase de inicializacion-----------------------------------------------------------------------------------------------
     #agrupamos a cada abeja con uno de los 3 roles
-    miColmena.clasificarAbejas()
+    
+    for generaciones in range(50):     #<- 10 es el total de ciclos que estan ocurriendo con las abejas
+        
+        miColmena.clasificarAbejas()
 
-    #fase de las abejas obreras-----------------------------------------------------------------------------------------------------
+        #fase de las abejas obreras-----------------------------------------------------------------------------------------------------
 
-    #la recien obrera regresa con la informacion de la fuente de comida y baila para informar a las obseravdoras
-    for i in range(len(miColmena.observadoras)):
-        miColmena.observadoras[i].abejaObservadora.elegirObrera(miColmena.obreras)
+        #la recien obrera regresa con la informacion de la fuente de comida y baila para informar a las obseravdoras
+        for i in range(len(miColmena.observadoras)):
+            miColmena.observadoras[i].abejaObservadora.elegirObrera(miColmena.obreras)
 
-     #ahora es el turno de las observadoras de explotar su fuente de alimento
+        #una vez que ya bailó la obrera, regresa a explotar la fuente de alimento
 
-    for i in range(len(miColmena.observadoras)):
-        miColmena.observadoras[i].abejaObservadora.explotarFuente(miColmena.observadoras[i].abejaObservadora.abejaObrera.abejaObrera.fuenteComida.x, miColmena.observadoras[i].abejaObservadora.abejaObrera.abejaObrera.fuenteComida.y)
+        for i in range(len(miColmena.obreras)):
+            abejaReferencia = random.randint(0, len(miColmena.obreras[i].abejaObrera.observadoras)-1)
+            miColmena.obreras[i].abejaObrera.explotarFuente(miColmena.obreras[i].abejaObrera.observadoras[abejaReferencia].abejaObrera.abejaObrera.fuenteComida.x, miColmena.obreras[i].abejaObrera.observadoras[abejaReferencia].abejaObrera.abejaObrera.fuenteComida.y)
 
-    #una vez que ya bailó la obrera, regresa a explotar la fuente de alimento
+        #-------------------------------------------------------------------------------------------------------------------------------
+        
+        #fase de las observadoras------------------------------------------------------------------------------------------------------
+        #ahora es el turno de las observadoras de explotar su fuente de alimento
 
-    for i in range(len(miColmena.obreras)):
-        abejaReferencia = random.randint(0, len(miColmena.obreras[i].abejaObrera.observadoras)-1)
-        miColmena.obreras[i].abejaObrera.explotarFuente(miColmena.obreras[i].abejaObrera.observadoras[abejaReferencia].abejaObrera.abejaObrera.fuenteComida.x, miColmena.obreras[i].abejaObrera.observadoras[abejaReferencia].abejaObrera.abejaObrera.fuenteComida.y)
+        for i in range(len(miColmena.observadoras)):
+            miColmena.observadoras[i].abejaObservadora.explotarFuente(miColmena.observadoras[i].abejaObservadora.abejaObrera.abejaObrera.fuenteComida.x, miColmena.observadoras[i].abejaObservadora.abejaObrera.abejaObrera.fuenteComida.y)
 
+        #--------------------------------------------------------------------------------------------------------------------------------
 
+        miColmena.verAbejas()
 
-    #aqui hagamos una impresion para ir viendo como van las cosas
-    print(type(miColmena))
-    miColmena.verAbejas()
+        #fase de las exploradoras--------------------------------------------------------------------------------------------------------
+
+        hayExploradoras = False
+        for i in range(len(miColmena.obreras)):
+            if miColmena.obreras[i].abejaObrera.fuenteComida.limite <= 0:
+
+                print("el rol que se supone aun no ha cambiado: ", type(miColmena.obreras[i].abejaObrera))
+
+                #la obrera abandona la fuente de comida y se convierte nuevamente en exploradora
+                miColmena.obreras[i].cambiarRol(rol=1)
+
+                print("el rol que se supone ha cambiado: ", type(miColmena.obreras[i].abejaExploradora))
+                hayExploradoras = True
+        
+
+        if hayExploradoras:
+
+            #algunas abejas han cambiado su rol, asi que hay que volver a clasificarlas
+            miColmena.clasificarAbejas()
+
+            print("esto es lo que hay en la lista de exploradoras: \n\n", miColmena.exploradoras)
+
+            #ahora en esa misma iteracion las abejas exploradoras salen a buscar nuevas fuentesde alimento
+
+            for i in range(len(miColmena.exploradoras)):
+
+                #ya se han encontrado las nuevas fuentes de comida
+                print("el rol que se supone es de la exploradora: ", type(miColmena.exploradoras[i].abejaExploradora))
+
+                #miColmena.abejas.append(abeja(0, miColmena.exploradoras[i].abejaExploradora.buscarFuenteDeComida()))
+                miColmena.exploradoras[i].cambiarRol(rol=0, fuenteAlimento=miColmena.exploradoras[i].abejaExploradora.buscarFuenteDeComida())
+
+        #las abjeas que eran exploradoras ya se han combertido en obreras nuevamente, asi que la lista de exploradoras se limpia
+        miColmena.clasificarAbejas()
+
+        #finalmente antes de pasar a la siguiente generacion, hay que liberar el arreglo de observadoras que siguen a cada obrera
+        for i in range(len(miColmena.obreras)):
+            miColmena.obreras[i].abejaObrera.observadoras.clear()
+
+        #aqui hagamos una impresion para ir viendo como van las cosas
+        print(type(miColmena))
+        miColmena.verAbejas()
