@@ -50,7 +50,7 @@ class obrera:
 
         flor = fuenteDeAlimento(x,y)
 
-        if flor.aptitud > self.fuenteComida:
+        if flor.aptitud() > self.fuenteComida.aptitud():
             self.fuenteComida = flor
         else:
             self.fuenteComida.limite -= 1
@@ -110,7 +110,7 @@ class observadora:
         print("despues de obrera in obreras:\t", p_sel)
         self.abejaObrera = ruleta(p_sel)
         print(type(self.abejaObrera))
-        self.abejaObrera.observadoras.append(self)  # <- la observadora se anota ella misma en la lista de las observadoras que siguen a la obrera
+        self.abejaObrera.abejaObrera.observadoras.append(self)  # <- la observadora se anota ella misma en la lista de las observadoras que siguen a la obrera
 
     def explotarFuente(self, xk, yk):
         '''
@@ -123,15 +123,15 @@ class observadora:
         (xk,yk) -> coordenadas de la solucion de alguna abeja que se encuentre por ahí
         '''
 
-        x = self.fuenteComida.x + random.uniform(-1,1) * (self.fuenteComida.x - xk)
-        y = self.fuenteComida.y + random.uniform(-1,1) * (self.fuenteComida.y - yk)
+        x = self.abejaObrera.abejaObrera.fuenteComida.x + random.uniform(-1,1) * (self.abejaObrera.abejaObrera.fuenteComida.x - xk)
+        y = self.abejaObrera.abejaObrera.fuenteComida.y + random.uniform(-1,1) * (self.abejaObrera.abejaObrera.fuenteComida.y - yk)
 
         flor = fuenteDeAlimento(x,y)    #<- en el caso de la observadora, esta va a ser la solución que representará
 
-        if flor.aptitud > self.abejaObrera.fuenteComida:
-            self.abejaObrera.fuenteComida = flor
+        if flor.aptitud() > self.abejaObrera.abejaObrera.fuenteComida.aptitud():
+            self.abejaObrera.abejaObrera.fuenteComida = flor
         else:
-            self.abejaObrera.fuenteComida.limite -= 1
+            self.abejaObrera.abejaObrera.fuenteComida.limite -= 1
 
         self.fuenteAlimento = flor
 
@@ -201,11 +201,11 @@ class abeja:
     def mostrarAbeja(self):
 
         if self.rol == 0:
-            print("rol: {}\t fuente de comida: {}\t aptitud: {}".format("obrera", self.abejaObrera.fuenteComida.mostrarFuente(), self.abejaObrera.fuenteComida.aptitud))
+            print("rol: {}\t fuente de comida: {}\t aptitud: {}".format("obrera", self.abejaObrera.fuenteComida.mostrarFuente(), self.abejaObrera.fuenteComida.aptitud()))
         elif self.rol == 1:
             print("rol: {}\t no tiene fuente de comida asignada".format("exploradora"))
         elif self.rol == 2:
-            print("rol: {}\t fuente de comida: {}\t aptitud: {}".format("observadora", self.abejaObservadora.fuenteAlimento.mostrarFuente(), self.abejaObservadora.fuenteAlimento.aptitud))
+            print("rol: {}\t fuente de comida: {}\t aptitud: {}".format("observadora", self.abejaObservadora.fuenteAlimento.mostrarFuente(), self.abejaObservadora.fuenteAlimento.aptitud()))
 
 
 class colmena:
@@ -267,8 +267,9 @@ def ruleta(p_sel):
     p_acum = []
     for i in range(len(p_sel)):
         acumulada = 0
-        for j in range(i):
-            print("me ejecuto\t", p_sel[j])
+        print("me ejecuto")
+        for j in range(i+1):
+            print(p_sel[j])
             acumulada += p_sel[j][1]
         
         p_acum.append([p_sel[i][0], acumulada])  #<- guardamos a la abeja obrera y a su probabilidad acumulada
@@ -280,7 +281,7 @@ def ruleta(p_sel):
 
     print("todo el p_acum:", p_acum)
 
-    for i in range(len(p_acum[0])):
+    for i in range(len(p_acum)):
 
         print("un valor de P_acum", p_acum[i])
 
@@ -331,13 +332,13 @@ if __name__ == "__main__":
      #ahora es el turno de las observadoras de explotar su fuente de alimento
 
     for i in range(len(miColmena.observadoras)):
-        miColmena.observadoras[i].abejaObservadora.explotarFuente(miColmena.observadoras[i].abejaObrera.fuenteComida.x, miColmena.observadoras[i].abejaObrera.fuenteComida.y)
+        miColmena.observadoras[i].abejaObservadora.explotarFuente(miColmena.observadoras[i].abejaObservadora.abejaObrera.abejaObrera.fuenteComida.x, miColmena.observadoras[i].abejaObservadora.abejaObrera.abejaObrera.fuenteComida.y)
 
     #una vez que ya bailó la obrera, regresa a explotar la fuente de alimento
 
     for i in range(len(miColmena.obreras)):
-        abejaReferencia = random.randint(0, len(miColmena.obreras[i].abejaObrera.observadoras))
-        miColmena.obreras[i].abejaObrera.explotarFuente(miColmena.obreras[i].abejaObrera.observadoras[abejaReferencia].abejaObservadora.fuenteAlimento.x, miColmena.obreras[i].abejaObrera.observadoras[abejaReferencia].abejaObservadora.fuenteAlimento.y)
+        abejaReferencia = random.randint(0, len(miColmena.obreras[i].abejaObrera.observadoras)-1)
+        miColmena.obreras[i].abejaObrera.explotarFuente(miColmena.obreras[i].abejaObrera.observadoras[abejaReferencia].abejaObrera.abejaObrera.fuenteComida.x, miColmena.obreras[i].abejaObrera.observadoras[abejaReferencia].abejaObrera.abejaObrera.fuenteComida.y)
 
 
 
