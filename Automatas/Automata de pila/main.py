@@ -122,10 +122,13 @@ def fcl(estado, caracter, ultimoAlmacenado):
 
     global miPila
     global rechazada
+    global archivo
 
     if estado == q and caracter == '0':
         
         print("(q, 0, {})".format(miPila.tope.dato))
+        archivo.write("(q, 0, {})\n".format(miPila.tope.dato))
+
         miPila.agregarElemento('X')
 
     elif estado == q and caracter == '1':
@@ -136,11 +139,14 @@ def fcl(estado, caracter, ultimoAlmacenado):
         if caracter == '1' and ultimoAlmacenado != None:
 
             print("(p, 1, {})".format(miPila.tope.dato))
+            archivo.write("(p, 1, {})\n".format(miPila.tope.dato))
+
             miPila.sacarElemento()
 
         elif caracter == '1' and ultimoAlmacenado == None:
 
             print("(p, 1, {})".format(miPila.tope.dato))
+            archivo.write("(p, 1, {})\n".format(miPila.tope.dato))
             print("sigue solicitando sacar datos de la pila, pero ya esta vacia, la cadena no es valida")
 
             rechazada = True
@@ -180,18 +186,20 @@ if __name__ == "__main__":
     cadena = ""
     opcion = input("1. inresar la cadena manualmente\n2.generar la cadena automaticamente\n\n")
     
-    if opcion == 2:
+    if opcion == '2':
         longitud = input("longitud de la cadena")
 
         cadena = generarCadena(longitud)
     
-    elif opcion == 1:
+    elif opcion == '1':
 
         #cadena = input("ingrese la cadena (primero ceros y después unos si desea que el programa funcione correctamente): ")
         cadena = "00001111"
 
+    print("esta es mi cadena: ", cadena)
     miPila = pila()
     rechazada = False
+    archivo = open("./ID's.txt", "w")
 
     # print("mi pila cuando se supone que esta vacia: ") 
     
@@ -224,6 +232,9 @@ if __name__ == "__main__":
         estado = fcl(estado, cadena[i], miPila.tope.dato)
 
     if miPila.estaVacia() and not rechazada:
+        archivo.write("(p, \0, {})\n".format(miPila.tope.dato))
+
+        print("(p, \0, {})".format(miPila.tope.dato))
         print("cadena aceptada")
     else:
         print("cadena rechazada")
