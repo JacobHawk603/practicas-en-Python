@@ -110,16 +110,13 @@ class observadora:
 
         #teniendo el fit acumulado, ahora podemos sacar la probabilidad de seleccion y tenemos que volver a recorrer todo el arreglo de obreras
         for obrera in obreras:
-
-            print("obrera in obreras:\t", obrera)
+            
             proba = self.evaluarFuente(obrera.abejaObrera.fuenteComida)/fit_sum
 
             p_sel.append([obrera, proba])
 
-        #aplicamos la ruleta para seleccionar a la abeja obrera
-        print("despues de obrera in obreras:\t", p_sel)
-        self.abejaObrera = ruleta(p_sel)
-        print(type(self.abejaObrera))
+        #aplicamos la ruleta para seleccionar a la abeja obrera        
+        self.abejaObrera = ruleta(p_sel)        
         self.abejaObrera.abejaObrera.observadoras.append(self)  # <- la observadora se anota ella misma en la lista de las observadoras que siguen a la obrera
 
     def explotarFuente(self, xk, yk):
@@ -202,7 +199,7 @@ class abeja:
 
         self.rol = rol
 
-        print("este es el nuevo rol: {}\t y este mi rol: {}".format(rol, self.rol))
+        #print("este es el nuevo rol: {}\t y este mi rol: {}".format(rol, self.rol))
 
         if self.rol == 0:
             self.abejaObrera = obrera(fuenteAlimento)
@@ -281,14 +278,11 @@ def ruleta(p_sel):
 
     return: abejaObrera
     '''
-    print("lo que llega a la ruleta:\t", p_sel)
     #obtenemos la probabilidad acumulada para cada obrera
     p_acum = []
     for i in range(len(p_sel)):
-        acumulada = 0
-        print("me ejecuto")
-        for j in range(i+1):
-            print(p_sel[j])
+        acumulada = 0    
+        for j in range(i+1):        
             acumulada += p_sel[j][1]
         
         p_acum.append([p_sel[i][0], acumulada])  #<- guardamos a la abeja obrera y a su probabilidad acumulada
@@ -296,16 +290,12 @@ def ruleta(p_sel):
     #ahora tenemos que tirar un random para seleccionar a que abeja seguimos
 
     valorAleatorio = random.uniform(0,1)
-    print("valor aleatorio de la ruleta: ", valorAleatorio)
 
-    print("todo el p_acum:", p_acum)
 
     for i in range(len(p_acum)):
+    
 
-        print("un valor de P_acum", p_acum[i])
-
-        if valorAleatorio < p_acum[i][1]:
-            print("otro print: \n\n\n", type(p_acum[i][0]))
+        if valorAleatorio < p_acum[i][1]:        
             return p_acum[i][0]
 
 
@@ -341,8 +331,8 @@ if __name__ == "__main__":
     #fin de la dase de inicializacion-----------------------------------------------------------------------------------------------
     #agrupamos a cada abeja con uno de los 3 roles
     
-    for generaciones in range(50):     #<- 10 es el total de ciclos que estan ocurriendo con las abejas
-        
+    for generaciones in range(50):     #<- 50 es el total de ciclos que estan ocurriendo con las abejas
+        print("\n\ngenreacion {}\n\n".format(generaciones))
         miColmena.clasificarAbejas()
 
         #fase de las abejas obreras-----------------------------------------------------------------------------------------------------
@@ -367,20 +357,16 @@ if __name__ == "__main__":
 
         #--------------------------------------------------------------------------------------------------------------------------------
 
-        miColmena.verAbejas()
+        #miColmena.verAbejas()
 
         #fase de las exploradoras--------------------------------------------------------------------------------------------------------
 
         hayExploradoras = False
         for i in range(len(miColmena.obreras)):
-            if miColmena.obreras[i].abejaObrera.fuenteComida.limite <= 0:
-
-                print("el rol que se supone aun no ha cambiado: ", type(miColmena.obreras[i].abejaObrera))
+            if miColmena.obreras[i].abejaObrera.fuenteComida.limite <= 0:                
 
                 #la obrera abandona la fuente de comida y se convierte nuevamente en exploradora
-                miColmena.obreras[i].cambiarRol(rol=1)
-
-                print("el rol que se supone ha cambiado: ", type(miColmena.obreras[i].abejaExploradora))
+                miColmena.obreras[i].cambiarRol(rol=1)                
                 hayExploradoras = True
         
 
@@ -388,15 +374,13 @@ if __name__ == "__main__":
 
             #algunas abejas han cambiado su rol, asi que hay que volver a clasificarlas
             miColmena.clasificarAbejas()
-
-            print("esto es lo que hay en la lista de exploradoras: \n\n", miColmena.exploradoras)
+            
 
             #ahora en esa misma iteracion las abejas exploradoras salen a buscar nuevas fuentesde alimento
 
             for i in range(len(miColmena.exploradoras)):
 
-                #ya se han encontrado las nuevas fuentes de comida
-                print("el rol que se supone es de la exploradora: ", type(miColmena.exploradoras[i].abejaExploradora))
+                #ya se han encontrado las nuevas fuentes de comida                
 
                 #miColmena.abejas.append(abeja(0, miColmena.exploradoras[i].abejaExploradora.buscarFuenteDeComida()))
                 miColmena.exploradoras[i].cambiarRol(rol=0, fuenteAlimento=miColmena.exploradoras[i].abejaExploradora.buscarFuenteDeComida())
@@ -408,6 +392,5 @@ if __name__ == "__main__":
         for i in range(len(miColmena.obreras)):
             miColmena.obreras[i].abejaObrera.observadoras.clear()
 
-        #aqui hagamos una impresion para ir viendo como van las cosas
-        print(type(miColmena))
+        #aqui hagamos una impresion para ir viendo como van las cosas        
         miColmena.verAbejas()
