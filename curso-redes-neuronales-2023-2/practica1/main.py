@@ -1,3 +1,8 @@
+#De La Huerta Avalos Gerardo Cristóbal
+#2021630243
+#6BM1
+
+
 import pandas as pd
 
 #hay que ajustar los pesos para obtener los and
