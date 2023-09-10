@@ -14,7 +14,9 @@ class Marco():
         self.grueso_inferior = self.lim_interno.get_y() - self.lim_externo.get_y()
 
 class Punto():
-    pertenece = False
+    perteneceAlMarco = False
+    fuera_marco=False
+    dentro_marco=False
 
     def __init__(self, x, y):
         self.x_coord = x
@@ -22,15 +24,38 @@ class Punto():
 
     def compararPertenencia(self, marco):
         
-        dentroDeAreaIzquierda = False
-        dentroDeAreaDerecha = False
-        dentroDeAreaCentralX = False
-        dentroDeAreaSuperior = False
-        dentroDeAreaInferior = False
-        dentroDeAreaCentralY = False
+        if((self.x_coord < marco.lim_externo.get_x()  or (self.x_coord > marco.lim_externo.get_x() + marco.lim_externo.get_width())) or (self.y_coord < marco.lim_externo.get_y()  or (self.y_coord > marco.lim_externo.get_y() + marco.lim_externo.get_height()))):
+            self.fuera_marco = True
 
-        if((abs(marco.lim_interno.get_x() - self.x_coord) < marco.grueso_izquierdo) and (abs(marco.lim_externo.get_x - self.x_coord) < marco.grueso_derecho)):
-            dentroDeAreaDerecha = True
+        elif(marco.lim_externo.get_y() <= self.y_coord and self.y_coord <= (marco.lim_externo.get_y() + marco.lim_externo.get_height())):
+
+            # Verificando si el pounto se encuentra en la parte izquierda del marco
+            if((abs(marco.lim_interno.get_x() - self.x_coord) <= marco.grueso_izquierdo) and (abs(marco.lim_externo.get_x() - self.x_coord) <= marco.grueso_izquierdo)):
+                self.perteneceAlMarco = True
+                print("un punto esta en el area iquierzda")
+
+            #verificando si el punto se encuentra en el area derecha del marco
+            elif((abs(marco.lim_interno.get_x() + marco.lim_interno.get_width() - self.x_coord) <= marco.grueso_derecho) and (abs(marco.lim_externo.get_x() + marco.lim_externo.get_width() - self.x_coord) <= marco.grueso_derecho)):
+                self.perteneceAlMarco = True
+                print("un punto esta en el area derecha")
+
+            elif(marco.lim_externo.get_x() <= self.x_coord and self.x_coord <= (marco.lim_externo.get_x() + marco.lim_externo.get_width())):
+
+                # Verificando si el pounto se encuentra en la parte inferior del marco
+                if((abs(marco.lim_interno.get_y() - self.y_coord) <= marco.grueso_inferior) and (abs(marco.lim_externo.get_y() - self.y_coord) <= marco.grueso_inferior)):
+                    self.perteneceAlMarco = True
+                    print("un punto esta en el area inferior")
+
+                #verificando si el punto se encuentra en el area superior del marco
+                elif((abs(marco.lim_interno.get_y() + marco.lim_interno.get_height() - self.y_coord) <= marco.grueso_superior) and (abs(marco.lim_externo.get_y() + marco.lim_externo.get_height() - self.y_coord) <= marco.grueso_superior)):
+                    self.perteneceAlMarco = True
+                    print("un punto esta en el area superior")
+
+                else:
+                    self.dentro_marco=True
+            
+            else:
+                self.dentro_marco=True
 
         return 0
 
@@ -62,7 +87,7 @@ def crearMarco(axis):
 
     return marco
 
-def inicializarPuntos(axis):
+def inicializarPuntos():
 
     puntos = []
 
@@ -73,8 +98,6 @@ def inicializarPuntos(axis):
         nuevoPunto = Punto(x, y)
 
         puntos.append(nuevoPunto)
-
-        axis.plot(nuevoPunto.x_coord, nuevoPunto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="green")
 
     # print("el punto en x: ",puntos[0].x_coord)
     return puntos
@@ -93,7 +116,18 @@ def main():
 
     print("grueso Izquiero: ({})\n grueso Derecho: ({})\n grueso superior: ({})\n grueso inferior: ({})".format(marco.grueso_izquierdo, marco.grueso_derecho, marco.grueso_superior, marco.grueso_inferior))
     #inicializamos los puntos
-    puntos = inicializarPuntos(axis)
+    puntos = inicializarPuntos()
+
+    for punto in puntos:
+        punto.compararPertenencia(marco)
+        
+        if(punto.perteneceAlMarco):
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="green")
+        elif(punto.fuera_marco):
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="red")
+        elif(punto.dentro_marco):
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="blue")
+
     plt.show()
     return 0
 
