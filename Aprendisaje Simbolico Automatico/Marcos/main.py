@@ -87,6 +87,58 @@ def crearMarco(axis):
 
     return marco
 
+def crearRectanguloDeHipotesis(puntos):
+    
+    min_x_ext_izq = 100000
+    max_y_ext_izq = 0
+
+    max_x_ext_der = 0
+    min_y_ext_der = 100000
+
+    for punto in puntos:
+
+        #obteniendo el extremo superior izquierdo
+        if(punto.x_coord < min_x_ext_izq):
+            min_x_ext_izq = punto.x_coord
+
+        if(punto.y_coord > max_y_ext_izq):
+            max_y_ext_izq = punto.y_coord
+        
+        #obteniendo el extremo inferior derecho
+
+        if(punto.x_coord > max_x_ext_der):
+            max_x_ext_der = punto.x_coord
+
+        if(punto.y_coord < min_y_ext_der):
+            min_y_ext_der = punto.y_coord
+
+    return min_x_ext_izq, max_x_ext_der, min_y_ext_der, max_y_ext_izq
+
+def crearHipotesis(puntosSobreMarco, puntosDentro, axis):
+    
+    #sacamos el limite externo del marco
+    
+    x1, x2, y1, y2 = crearRectanguloDeHipotesis(puntosSobreMarco)
+
+    lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y2-y1), fill=False)
+
+    #sacamos el limite interno del marco
+
+    x3, x4, y3, y4 = crearRectanguloDeHipotesis(puntosDentro)
+
+    lim_interno = Rectangle((x3,y3), width=(x4-x3), height=(y4-y3), fill=False)
+
+    #construimos el marco hipotetico
+
+    hipotesis = Marco(lim_externo, lim_interno)
+
+    #dibujamos el marco
+
+    axis.add_patch(hipotesis.lim_externo)
+    axis.add_patch(hipotesis.lim_interno)
+
+    return hipotesis
+
 def inicializarPuntos():
 
     puntos = []
@@ -166,6 +218,8 @@ def main():
             axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="green")
         else:
             axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="red")
+
+    hipotesis = crearHipotesis(puntosSobreMarco, puntosDentro, axis)
 
     #axis2 = figure.add_subplot(1,2,1)
 
