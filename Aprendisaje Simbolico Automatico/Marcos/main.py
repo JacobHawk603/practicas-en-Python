@@ -103,32 +103,74 @@ def inicializarPuntos():
     return puntos
 
 def main():
+
+    regenerar = True
+
+    #creamos los arreglos de los puntos en el lienzo
+    puntosSobreMarco = []
+    puntosFuera = []
+    puntosDentro= []
+
     #vamos a comenzar creando el lienzo
 
     figure, axis = plt.subplots()
     axis.set_xlim(0,tamano_espacio)
     axis.set_ylim(0,tamano_espacio)
     axis.plot()
+    
+    while(regenerar):
 
-    #creamos el marco
+        #creamos el marco
 
-    marco = crearMarco(axis)
+        marco = crearMarco(axis)
 
-    print("grueso Izquiero: ({})\n grueso Derecho: ({})\n grueso superior: ({})\n grueso inferior: ({})".format(marco.grueso_izquierdo, marco.grueso_derecho, marco.grueso_superior, marco.grueso_inferior))
-    #inicializamos los puntos
-    puntos = inicializarPuntos()
+        print("grueso Izquiero: ({})\n grueso Derecho: ({})\n grueso superior: ({})\n grueso inferior: ({})".format(marco.grueso_izquierdo, marco.grueso_derecho, marco.grueso_superior, marco.grueso_inferior))
+        #inicializamos los puntos
+        puntos = inicializarPuntos()
+
+        for punto in puntos:
+            punto.compararPertenencia(marco)
+            
+            if(punto.perteneceAlMarco):
+                puntosSobreMarco.append(punto)
+                axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="green")
+            elif(punto.fuera_marco):
+                puntosFuera.append(punto)
+                axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="red")
+            elif(punto.dentro_marco):
+                puntosDentro.append(punto)
+                axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="blue")
+
+        if((len(puntosSobreMarco) < 4) or (len(puntosDentro) < 4) or (len(puntosFuera) < 4)):
+            axis.clear()
+            puntosFuera.clear()
+            puntosDentro.clear()
+            puntosSobreMarco.clear()
+            regenerar=True
+        else:
+            regenerar=False
+
+    plt.show()
+
+    #creamos la segunda grafica
+
+    figure, axis = plt.subplots()
+    axis.set_xlim(0,tamano_espacio)
+    axis.set_ylim(0,tamano_espacio)
+    axis.plot()
 
     for punto in puntos:
         punto.compararPertenencia(marco)
         
         if(punto.perteneceAlMarco):
             axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="green")
-        elif(punto.fuera_marco):
+        else:
             axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="red")
-        elif(punto.dentro_marco):
-            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="blue")
+
+    #axis2 = figure.add_subplot(1,2,1)
 
     plt.show()
+
     return 0
 
 if __name__ == "__main__":
