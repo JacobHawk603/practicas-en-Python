@@ -121,11 +121,62 @@ def crearHipotesis(puntosSobreMarco, puntosDentro, axis):
     
     x1, x2, y1, y2 = crearRectanguloDeHipotesis(puntosSobreMarco)
 
-    lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y2-y1), fill=False)
-
     #obtenemos las coordenadas del rectangulo formado por los puntos dentro del marco
 
     x3, x4, y3, y4 = crearRectanguloDeHipotesis(puntosDentro)
+
+    #formamos el marco evaluando que coordenadas engloban todo el marco correctamente
+
+    if(x3 < x1):
+        if(x4 > x2):
+            if(y3 < y1):
+                if(y4 > y2):
+                    lim_externo = Rectangle((x3,y3), width=(x4-x3), height=(y4-y3), fill=False)
+                else:
+                    lim_externo = Rectangle((x3,y3), width=(x4-x3), height=(y2-y3), fill=False)
+            else:
+                if(y4 > y2):
+                    lim_externo = Rectangle((x3,y1), width=(x4-x3), height=(y4-y1), fill=False)
+                else:
+                    lim_externo = Rectangle((x3,y1), width=(x4-x3), height=(y2-y1), fill=False)
+        else:
+            if(y3 < y1):
+                if(y4 > y2):
+                    lim_externo = Rectangle((x3,y3), width=(x2-x3), height=(y4-y3), fill=False)
+                else:
+                    lim_externo = Rectangle((x3,y3), width=(x2-x3), height=(y2-y3), fill=False)
+            else:
+                if(y4 > y2):
+                    lim_externo = Rectangle((x3,y1), width=(x2-x3), height=(y4-y1), fill=False)
+                else:
+                    lim_externo = Rectangle((x3,y1), width=(x2-x3), height=(y2-y1), fill=False)
+    else:
+        if(x4 > x2):
+            if(y3 < y1):
+                if(y4 > y2):
+                    lim_externo = Rectangle((x1,y3), width=(x4-x1), height=(y4-y3), fill=False)
+                else:
+                    lim_externo = Rectangle((x1,y3), width=(x4-x1), height=(y2-y3), fill=False)
+            else:
+                if(y4 > y2):
+                    lim_externo = Rectangle((x1,y1), width=(x4-x1), height=(y4-y1), fill=False)
+                else:
+                    lim_externo = Rectangle((x1,y1), width=(x4-x1), height=(y2-y1), fill=False)
+        else:
+            if(y3 < y1):
+                if(y4 > y2):
+                    lim_externo = Rectangle((x1,y3), width=(x2-x1), height=(y4-y3), fill=False)
+                else:
+                    lim_externo = Rectangle((x1,y3), width=(x2-x1), height=(y2-y3), fill=False)
+            else:
+                if(y4 > y2):
+                    lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y4-y1), fill=False)
+                else:
+                    lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y2-y1), fill=False)
+            
+            
+
+    # lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y2-y1), fill=False)
 
     lim_interno = Rectangle((x3,y3), width=(x4-x3), height=(y4-y3), fill=False)
 
