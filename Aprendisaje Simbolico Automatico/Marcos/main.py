@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 import numpy as np
+import copy
 
 class Marco():
 
@@ -116,13 +117,13 @@ def crearRectanguloDeHipotesis(puntos):
 
 def crearHipotesis(puntosSobreMarco, puntosDentro, axis):
     
-    #sacamos el limite externo del marco
+    #obtenemos las coordenadas del rectangulo formado por los puntos sobre el marco
     
     x1, x2, y1, y2 = crearRectanguloDeHipotesis(puntosSobreMarco)
 
     lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y2-y1), fill=False)
 
-    #sacamos el limite interno del marco
+    #obtenemos las coordenadas del rectangulo formado por los puntos dentro del marco
 
     x3, x4, y3, y4 = crearRectanguloDeHipotesis(puntosDentro)
 
@@ -138,6 +139,28 @@ def crearHipotesis(puntosSobreMarco, puntosDentro, axis):
     axis.add_patch(hipotesis.lim_interno)
 
     return hipotesis
+
+def probarHipotesis(puntosPrueba, puntosReales):
+
+    vp = 0
+    fp = 0
+    vn = 0
+    fn = 0
+
+    for i in range(len(puntosReales)):
+        
+        if(puntosReales[i].perteneceAlMarco and puntosPrueba[i].perteneceAlMarco):
+            vp += 1
+        elif(not(puntosReales[i].perteneceAlMarco) and not(puntosPrueba[i].perteneceAlMarco)):
+            vn += 1
+        elif(not(puntosReales[i].perteneceAlMarco) and puntosPrueba[i].perteneceAlMarco):
+            fp += 1
+        elif(puntosReales[i].perteneceAlMarco and not(puntosPrueba[i].perteneceAlMarco)):
+            fn += 1
+
+    
+    print("vp: {}\tfp: {}\nfn: {}\t vn: {}".format(vp, fp, fn, vn))
+    return 0
 
 def inicializarPuntos():
 
@@ -222,6 +245,49 @@ def main():
     hipotesis = crearHipotesis(puntosSobreMarco, puntosDentro, axis)
 
     #axis2 = figure.add_subplot(1,2,1)
+
+    plt.show()
+    #Preparamos ahora la nueva fugura para los nuevos puntos con los que vamos a evaluar la hipotesis
+
+    figure, axis = plt.subplots()
+    axis.set_xlim(0,tamano_espacio)
+    axis.set_ylim(0,tamano_espacio)
+    axis.plot()
+
+    #creamos el set de puntos de prueba
+
+    puntosPrueba = inicializarPuntos()
+    puntosPrueba1 = copy.deepcopy(puntosPrueba)
+    puntosPrueba2 = copy.deepcopy(puntosPrueba)
+    #validamos los puntos de prueba en el marco original, para conocer el valor real de los puntos
+
+    puntosParaPrueba = []
+
+    puntosReales = []
+
+    for punto in puntosPrueba1:
+        punto.compararPertenencia(marco)
+        puntosReales.append(punto)
+
+        if(punto.perteneceAlMarco):
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="green")
+        else:
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="red")
+
+    #con los mismo puntos, validamos su pertenencia, pero los guardamos en otro arreglo para su validación
+    for punto in puntosPrueba2:
+        punto.compararPertenencia(hipotesis)
+        puntosParaPrueba.append(punto)
+        
+    #ploteamos la hipotesis
+    # copia_hipotesis = Marco(hipotesis.lim_externo, hipotesis.lim_interno)
+    axis.add_patch(Rectangle((hipotesis.lim_externo.get_x(), hipotesis.lim_externo.get_y()), width=hipotesis.lim_externo.get_width(), height=hipotesis.lim_externo.get_height(), fill=False, color="red"))
+    axis.add_patch(Rectangle((hipotesis.lim_interno.get_x(), hipotesis.lim_interno.get_y()), width=hipotesis.lim_interno.get_width(), height=hipotesis.lim_interno.get_height(), fill=False, color="red"))
+
+    axis.plot()
+
+    #Ahora que tenemos los puntos de prueba, es momento de probar la hipotesis
+    probarHipotesis(puntosParaPrueba, puntosReales)
 
     plt.show()
 
