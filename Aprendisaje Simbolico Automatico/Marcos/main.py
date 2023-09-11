@@ -33,24 +33,24 @@ class Punto():
             # Verificando si el pounto se encuentra en la parte izquierda del marco
             if((abs(marco.lim_interno.get_x() - self.x_coord) <= marco.grueso_izquierdo) and (abs(marco.lim_externo.get_x() - self.x_coord) <= marco.grueso_izquierdo)):
                 self.perteneceAlMarco = True
-                print("un punto esta en el area iquierzda")
+                # print("un punto esta en el area iquierzda")
 
             #verificando si el punto se encuentra en el area derecha del marco
             elif((abs(marco.lim_interno.get_x() + marco.lim_interno.get_width() - self.x_coord) <= marco.grueso_derecho) and (abs(marco.lim_externo.get_x() + marco.lim_externo.get_width() - self.x_coord) <= marco.grueso_derecho)):
                 self.perteneceAlMarco = True
-                print("un punto esta en el area derecha")
+                # print("un punto esta en el area derecha")
 
             elif(marco.lim_externo.get_x() <= self.x_coord and self.x_coord <= (marco.lim_externo.get_x() + marco.lim_externo.get_width())):
 
                 # Verificando si el pounto se encuentra en la parte inferior del marco
                 if((abs(marco.lim_interno.get_y() - self.y_coord) <= marco.grueso_inferior) and (abs(marco.lim_externo.get_y() - self.y_coord) <= marco.grueso_inferior)):
                     self.perteneceAlMarco = True
-                    print("un punto esta en el area inferior")
+                    # print("un punto esta en el area inferior")
 
                 #verificando si el punto se encuentra en el area superior del marco
                 elif((abs(marco.lim_interno.get_y() + marco.lim_interno.get_height() - self.y_coord) <= marco.grueso_superior) and (abs(marco.lim_externo.get_y() + marco.lim_externo.get_height() - self.y_coord) <= marco.grueso_superior)):
                     self.perteneceAlMarco = True
-                    print("un punto esta en el area superior")
+                    # print("un punto esta en el area superior")
 
                 else:
                     self.dentro_marco=True
@@ -84,7 +84,7 @@ def crearMarco(axis):
     axis.add_patch(marco.lim_externo)
     axis.add_patch(marco.lim_interno)
 
-    print("({},{})\n{}\n{}".format(x, y, m, n))
+    # print("({},{})\n{}\n{}".format(x, y, m, n))
 
     return marco
 
@@ -209,8 +209,14 @@ def probarHipotesis(puntosPrueba, puntosReales):
         elif(puntosReales[i].perteneceAlMarco and not(puntosPrueba[i].perteneceAlMarco)):
             fn += 1
 
-    
+    accuracy = (vp + vn)/(vp + vn + fp + fn)
+    presicion = vp/(vp + fp)
+    recall = vp/(vp+fn)
+    f1 = 2*((presicion * recall)/(presicion + recall))
+
+
     print("vp: {}\tfp: {}\nfn: {}\t vn: {}".format(vp, fp, fn, vn))
+    print("accuracy: {}\nprecision: {}\nrecall: {}\nf1: {}".format(accuracy, presicion, recall, f1))
     return 0
 
 def inicializarPuntos():
@@ -218,8 +224,8 @@ def inicializarPuntos():
     puntos = []
 
     for i in range(tamano_espacio):
-        x = np.random.randint(0, tamano_espacio)
-        y = np.random.randint(0, tamano_espacio)
+        x = np.random.uniform(0, tamano_espacio)
+        y = np.random.uniform(0, tamano_espacio)
 
         nuevoPunto = Punto(x, y)
 
@@ -250,7 +256,7 @@ def main():
 
         marco = crearMarco(axis)
 
-        print("grueso Izquiero: ({})\n grueso Derecho: ({})\n grueso superior: ({})\n grueso inferior: ({})".format(marco.grueso_izquierdo, marco.grueso_derecho, marco.grueso_superior, marco.grueso_inferior))
+        # print("grueso Izquiero: ({})\n grueso Derecho: ({})\n grueso superior: ({})\n grueso inferior: ({})".format(marco.grueso_izquierdo, marco.grueso_derecho, marco.grueso_superior, marco.grueso_inferior))
         #inicializamos los puntos
         puntos = inicializarPuntos()
 
@@ -329,9 +335,12 @@ def main():
     for punto in puntosPrueba2:
         punto.compararPertenencia(hipotesis)
         puntosParaPrueba.append(punto)
-        
+    
+    #ploteamos el marco real
+    axis.add_patch(Rectangle((marco.lim_externo.get_x(), marco.lim_externo.get_y()), width=marco.lim_externo.get_width(), height=marco.lim_externo.get_height(), fill=False, color="blue"))
+    axis.add_patch(Rectangle((marco.lim_interno.get_x(), marco.lim_interno.get_y()), width=marco.lim_interno.get_width(), height=marco.lim_interno.get_height(), fill=False, color="blue"))
+
     #ploteamos la hipotesis
-    # copia_hipotesis = Marco(hipotesis.lim_externo, hipotesis.lim_interno)
     axis.add_patch(Rectangle((hipotesis.lim_externo.get_x(), hipotesis.lim_externo.get_y()), width=hipotesis.lim_externo.get_width(), height=hipotesis.lim_externo.get_height(), fill=False, color="red"))
     axis.add_patch(Rectangle((hipotesis.lim_interno.get_x(), hipotesis.lim_interno.get_y()), width=hipotesis.lim_interno.get_width(), height=hipotesis.lim_interno.get_height(), fill=False, color="red"))
 
@@ -346,5 +355,5 @@ def main():
 
 if __name__ == "__main__":
 
-    tamano_espacio = 30
+    tamano_espacio = int(input("indique la cantidad de muestras con las que se va a trabajar: "))
     main()
