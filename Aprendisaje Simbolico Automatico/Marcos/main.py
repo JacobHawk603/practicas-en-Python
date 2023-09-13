@@ -75,8 +75,8 @@ def crearMarco(axis):
     d_width = np.random.randint(1, 10)
     d_height = np.random.randint(1, 10)
 
-    rectanguloexterno = Rectangle((x,y), width, height, fill=False)
-    rectanguloInterno = Rectangle((x+m,y+n), abs(width-m-d_width), abs(height-n-d_height), fill=False)
+    rectanguloexterno = Rectangle((x,y), width, height, fill=True, color="#CAFFFA")
+    rectanguloInterno = Rectangle((x+m,y+n), abs(width-m-d_width), abs(height-n-d_height), fill=True, color="white")
 
     #definimos el marco en una variable para tenerla siempre con nosotros
     marco = Marco(rectanguloexterno,rectanguloInterno)
@@ -131,54 +131,54 @@ def crearHipotesis(puntosSobreMarco, puntosDentro, axis):
         if(x4 > x2):
             if(y3 < y1):
                 if(y4 > y2):
-                    lim_externo = Rectangle((x3,y3), width=(x4-x3), height=(y4-y3), fill=False)
+                    lim_externo = Rectangle((x3,y3), width=(x4-x3), height=(y4-y3), fill=True, color="#FFD6A5")
                 else:
-                    lim_externo = Rectangle((x3,y3), width=(x4-x3), height=(y2-y3), fill=False)
+                    lim_externo = Rectangle((x3,y3), width=(x4-x3), height=(y2-y3), fill=True, color="#FFD6A5")
             else:
                 if(y4 > y2):
-                    lim_externo = Rectangle((x3,y1), width=(x4-x3), height=(y4-y1), fill=False)
+                    lim_externo = Rectangle((x3,y1), width=(x4-x3), height=(y4-y1), fill=True, color="#FFD6A5")
                 else:
-                    lim_externo = Rectangle((x3,y1), width=(x4-x3), height=(y2-y1), fill=False)
+                    lim_externo = Rectangle((x3,y1), width=(x4-x3), height=(y2-y1), fill=True, color="#FFD6A5")
         else:
             if(y3 < y1):
                 if(y4 > y2):
-                    lim_externo = Rectangle((x3,y3), width=(x2-x3), height=(y4-y3), fill=False)
+                    lim_externo = Rectangle((x3,y3), width=(x2-x3), height=(y4-y3), fill=True, color="#FFD6A5")
                 else:
-                    lim_externo = Rectangle((x3,y3), width=(x2-x3), height=(y2-y3), fill=False)
+                    lim_externo = Rectangle((x3,y3), width=(x2-x3), height=(y2-y3), fill=True, color="#FFD6A5")
             else:
                 if(y4 > y2):
-                    lim_externo = Rectangle((x3,y1), width=(x2-x3), height=(y4-y1), fill=False)
+                    lim_externo = Rectangle((x3,y1), width=(x2-x3), height=(y4-y1), fill=True, color="#FFD6A5")
                 else:
-                    lim_externo = Rectangle((x3,y1), width=(x2-x3), height=(y2-y1), fill=False)
+                    lim_externo = Rectangle((x3,y1), width=(x2-x3), height=(y2-y1), fill=True, color="#FFD6A5")
     else:
         if(x4 > x2):
             if(y3 < y1):
                 if(y4 > y2):
-                    lim_externo = Rectangle((x1,y3), width=(x4-x1), height=(y4-y3), fill=False)
+                    lim_externo = Rectangle((x1,y3), width=(x4-x1), height=(y4-y3), fill=True, color="#FFD6A5")
                 else:
-                    lim_externo = Rectangle((x1,y3), width=(x4-x1), height=(y2-y3), fill=False)
+                    lim_externo = Rectangle((x1,y3), width=(x4-x1), height=(y2-y3), fill=True, color="#FFD6A5")
             else:
                 if(y4 > y2):
-                    lim_externo = Rectangle((x1,y1), width=(x4-x1), height=(y4-y1), fill=False)
+                    lim_externo = Rectangle((x1,y1), width=(x4-x1), height=(y4-y1), fill=True, color="#FFD6A5")
                 else:
-                    lim_externo = Rectangle((x1,y1), width=(x4-x1), height=(y2-y1), fill=False)
+                    lim_externo = Rectangle((x1,y1), width=(x4-x1), height=(y2-y1), fill=True, color="#FFD6A5")
         else:
             if(y3 < y1):
                 if(y4 > y2):
-                    lim_externo = Rectangle((x1,y3), width=(x2-x1), height=(y4-y3), fill=False)
+                    lim_externo = Rectangle((x1,y3), width=(x2-x1), height=(y4-y3), fill=True, color="#FFD6A5")
                 else:
-                    lim_externo = Rectangle((x1,y3), width=(x2-x1), height=(y2-y3), fill=False)
+                    lim_externo = Rectangle((x1,y3), width=(x2-x1), height=(y2-y3), fill=True, color="#FFD6A5")
             else:
                 if(y4 > y2):
-                    lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y4-y1), fill=False)
+                    lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y4-y1), fill=True, color="#FFD6A5")
                 else:
-                    lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y2-y1), fill=False)
+                    lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y2-y1), fill=True, color="#FFD6A5")
             
             
 
     # lim_externo = Rectangle((x1,y1), width=(x2-x1), height=(y2-y1), fill=False)
 
-    lim_interno = Rectangle((x3,y3), width=(x4-x3), height=(y4-y3), fill=False)
+    lim_interno = Rectangle((x3,y3), width=(x4-x3), height=(y4-y3), fill=True, color="white")
 
     #construimos el marco hipotetico
 
@@ -219,13 +219,13 @@ def probarHipotesis(puntosPrueba, puntosReales):
     print("accuracy: {}\nprecision: {}\nrecall: {}\nf1: {}".format(accuracy, presicion, recall, f1))
     return 0
 
-def inicializarPuntos():
+def inicializarPuntos(minX, minY, maxX, maxY):
 
     puntos = []
 
-    for i in range(tamano_espacio):
-        x = np.random.uniform(0, tamano_espacio)
-        y = np.random.uniform(0, tamano_espacio)
+    for i in range(num_muestras):
+        x = np.random.uniform(minX, maxX)
+        y = np.random.uniform(minY, maxY)
 
         nuevoPunto = Punto(x, y)
 
@@ -246,8 +246,8 @@ def main():
     #vamos a comenzar creando el lienzo
 
     figure, axis = plt.subplots()
-    axis.set_xlim(0,tamano_espacio)
-    axis.set_ylim(0,tamano_espacio)
+    axis.set_xlim(0,dim_Espacio)
+    axis.set_ylim(0,dim_Espacio)
     axis.plot()
     
     while(regenerar):
@@ -258,20 +258,20 @@ def main():
 
         # print("grueso Izquiero: ({})\n grueso Derecho: ({})\n grueso superior: ({})\n grueso inferior: ({})".format(marco.grueso_izquierdo, marco.grueso_derecho, marco.grueso_superior, marco.grueso_inferior))
         #inicializamos los puntos
-        puntos = inicializarPuntos()
+        puntos = inicializarPuntos((marco.lim_externo.get_x()-2), (marco.lim_externo.get_y()-2), (marco.lim_externo.get_x()+ marco.lim_externo.get_width() +2),(marco.lim_externo.get_y()+ marco.lim_externo.get_height() +2))
 
         for punto in puntos:
             punto.compararPertenencia(marco)
             
             if(punto.perteneceAlMarco):
                 puntosSobreMarco.append(punto)
-                axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="green")
+                axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="green", markerfacecolor="green")
             elif(punto.fuera_marco):
                 puntosFuera.append(punto)
-                axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="red")
+                axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
             elif(punto.dentro_marco):
                 puntosDentro.append(punto)
-                axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="blue")
+                axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="blue", markerfacecolor="blue")
 
         if((len(puntosSobreMarco) < 4) or (len(puntosDentro) < 4) or (len(puntosFuera) < 4)):
             axis.clear()
@@ -287,17 +287,17 @@ def main():
     #creamos la segunda grafica
 
     figure, axis = plt.subplots()
-    axis.set_xlim(0,tamano_espacio)
-    axis.set_ylim(0,tamano_espacio)
+    axis.set_xlim(0,dim_Espacio)
+    axis.set_ylim(0,dim_Espacio)
     axis.plot()
 
     for punto in puntos:
         punto.compararPertenencia(marco)
         
         if(punto.perteneceAlMarco):
-            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="green")
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="green", markerfacecolor="green")
         else:
-            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="red")
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
 
     hipotesis = crearHipotesis(puntosSobreMarco, puntosDentro, axis)
 
@@ -307,13 +307,13 @@ def main():
     #Preparamos ahora la nueva fugura para los nuevos puntos con los que vamos a evaluar la hipotesis
 
     figure, axis = plt.subplots()
-    axis.set_xlim(0,tamano_espacio)
-    axis.set_ylim(0,tamano_espacio)
+    axis.set_xlim(0,dim_Espacio)
+    axis.set_ylim(0,dim_Espacio)
     axis.plot()
 
     #creamos el set de puntos de prueba
 
-    puntosPrueba = inicializarPuntos()
+    puntosPrueba = inicializarPuntos((marco.lim_externo.get_x()-2), (marco.lim_externo.get_y()-2), (marco.lim_externo.get_x()+ marco.lim_externo.get_width() +2),(marco.lim_externo.get_y()+ marco.lim_externo.get_height() +2))
     puntosPrueba1 = copy.deepcopy(puntosPrueba)
     puntosPrueba2 = copy.deepcopy(puntosPrueba)
     #validamos los puntos de prueba en el marco original, para conocer el valor real de los puntos
@@ -327,9 +327,9 @@ def main():
         puntosReales.append(punto)
 
         if(punto.perteneceAlMarco):
-            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="green")
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="green", markerfacecolor="green")
         else:
-            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=20, markeredgecolor="red", markerfacecolor="red")
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
 
     #con los mismo puntos, validamos su pertenencia, pero los guardamos en otro arreglo para su validación
     for punto in puntosPrueba2:
@@ -337,12 +337,12 @@ def main():
         puntosParaPrueba.append(punto)
     
     #ploteamos el marco real
-    axis.add_patch(Rectangle((marco.lim_externo.get_x(), marco.lim_externo.get_y()), width=marco.lim_externo.get_width(), height=marco.lim_externo.get_height(), fill=False, color="blue"))
-    axis.add_patch(Rectangle((marco.lim_interno.get_x(), marco.lim_interno.get_y()), width=marco.lim_interno.get_width(), height=marco.lim_interno.get_height(), fill=False, color="blue"))
+    axis.add_patch(Rectangle((marco.lim_externo.get_x(), marco.lim_externo.get_y()), width=marco.lim_externo.get_width(), height=marco.lim_externo.get_height(), fill=True, color="#CAFFFA"))
+    axis.add_patch(Rectangle((marco.lim_interno.get_x(), marco.lim_interno.get_y()), width=marco.lim_interno.get_width(), height=marco.lim_interno.get_height(), fill=True, color="white"))
 
     #ploteamos la hipotesis
-    axis.add_patch(Rectangle((hipotesis.lim_externo.get_x(), hipotesis.lim_externo.get_y()), width=hipotesis.lim_externo.get_width(), height=hipotesis.lim_externo.get_height(), fill=False, color="red"))
-    axis.add_patch(Rectangle((hipotesis.lim_interno.get_x(), hipotesis.lim_interno.get_y()), width=hipotesis.lim_interno.get_width(), height=hipotesis.lim_interno.get_height(), fill=False, color="red"))
+    axis.add_patch(Rectangle((hipotesis.lim_externo.get_x(), hipotesis.lim_externo.get_y()), width=hipotesis.lim_externo.get_width(), height=hipotesis.lim_externo.get_height(), fill=False, color="#FFD6A5"))
+    axis.add_patch(Rectangle((hipotesis.lim_interno.get_x(), hipotesis.lim_interno.get_y()), width=hipotesis.lim_interno.get_width(), height=hipotesis.lim_interno.get_height(), fill=False, color="#FFD6A5"))
 
     axis.plot()
 
@@ -355,5 +355,6 @@ def main():
 
 if __name__ == "__main__":
 
-    tamano_espacio = int(input("indique la cantidad de muestras con las que se va a trabajar: "))
+    dim_Espacio = 30
+    num_muestras = int(input("indique la cantidad de muestras con las que se va a trabajar: "))
     main()
