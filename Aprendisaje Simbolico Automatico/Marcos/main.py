@@ -326,15 +326,15 @@ def main():
         punto.compararPertenencia(marco)
         puntosReales.append(punto)
 
-        if(punto.perteneceAlMarco):
-            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="green", markerfacecolor="green")
-        else:
-            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
-
     #con los mismo puntos, validamos su pertenencia, pero los guardamos en otro arreglo para su validación
     for punto in puntosPrueba2:
         punto.compararPertenencia(hipotesis)
         puntosParaPrueba.append(punto)
+
+        if(punto.perteneceAlMarco):
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="green", markerfacecolor="green")
+        else:
+            axis.plot(punto.x_coord, punto.y_coord, marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
     
     #ploteamos el marco real
     axis.add_patch(Rectangle((marco.lim_externo.get_x(), marco.lim_externo.get_y()), width=marco.lim_externo.get_width(), height=marco.lim_externo.get_height(), fill=True, color="#CAFFFA"))
