@@ -17,7 +17,7 @@ if __name__ == "__main__":
     #Calculamos los coeficientes cepstrales en escala de Mel
     mfcc = librosa.feature.mfcc(y=y, sr=sr)
     print(type(mfcc))
-    print(mfcc)
+    print("\n\nMFCC's\n\n",mfcc)
 
     #calculamos la envolvente espectral(spectral_centroids)
     envolvente = librosa.feature.spectral_centroid(y=y, sr=sr)[0]
@@ -25,10 +25,8 @@ if __name__ == "__main__":
     print(type(envolvente))
     print(envolvente)
 
-    #calculando la constante espectral      <- Revisar esto, ya que no parece ser lo que buscamos
-    fmin = librosa.midi_to_hz(36)
-    c = librosa.cqt(y=y, sr=sr, fmin=fmin, n_bins=72)
-    logC = librosa.amplitude_to_db(abs(c))
+    #calculando el contraste espectral
+    contraste_espectral = librosa.feature.spectral_contrast(y=y, sr=sr)
 
     #Visualizar el espectograma
     plt.subplot(3,2,1)
@@ -59,9 +57,9 @@ if __name__ == "__main__":
     plt.legend()
     plt.title("envolvente")
 
-    #visualizar la constante espectral
+    #visualizar el contraste espectral
     plt.subplot(3,2,5)
-    librosa.display.specshow(logC, sr=sr, x_axis="time", y_axis="cqt_note", fmin=fmin)
+    librosa.display.specshow(contraste_espectral, sr=sr, x_axis="time", y_axis="cqt_note")
     plt.colorbar(format='%+2.0f dB')
     plt.title('constante espectral')
     plt.show()

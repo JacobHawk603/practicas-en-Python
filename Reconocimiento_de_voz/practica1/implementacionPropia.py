@@ -2,11 +2,12 @@ import librosa      #<- importamos librosa unicamente para obtener el ndArray co
 import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
+import speechpy
 
 def mfcc(y, sr):
     '''y es nuestra señal discretizada a la cual le aplicamos la transformada de Fourier en tiempo corto'''
 
-    f, t, zxx = signal.stft(x=y)
+    f, t, zxx = signal.stft(x=y, nperseg=2048)
 
     #ahora que tenemos la transformada en tiempo corto, hay que elevarla al cuadrado
     zxx_2 = zxx**2
@@ -40,7 +41,18 @@ def mfcc(y, sr):
     plt.show()
 
     plt.show()
-    
+
+    #dejaremos los espctogramas computados por librosa, ya que es probable que otra librería no tenga esa información
+
+def graficarEspectograma(zxx, sr):
+    '''zxx: np.ndarray  -> Es la stft de un audio\n\n
+        sr: sampling rate obtenido de librosa.load
+    '''
+    spectogram = librosa.amplitude_to_db(zxx, ref=np.max)
+    # plt.subplot(1,2,1)
+    librosa.display.specshow(spectogram, sr=sr, x_axis='time', y_axis='log')
+    plt.colorbar(format='%+2.0f dB')
+    plt.title('Espectograma')
 
 if __name__ == "__main__":
     
@@ -49,4 +61,25 @@ if __name__ == "__main__":
 
     y, sr = librosa.load("src/audio el quijote reconocimiento de voz.mp3")
 
-    mfcc(y, sr)
+    #para obtener la stft
+    f, t, zxx = signal.stft(x=y, nperseg=2048)  #<- Esta parte con estos parametros permite obtener la misma stft que librosa
+    
+    plt.subplot(1,2,1)
+    graficarEspectograma(zxx=zxx, sr=sr)
+
+    #obtener los mfcc
+    f1, t1, espectograma = signal.spectrogram(x=y, fs=sr, nfft=2048)
+    print("\n\nespectograma sin convercion a DB\n\n", espectograma)
+
+    mel_coeficients = speechpy.feature.mfcc(signal=y, sampling_frequency=sr)
+    print("\n\nMFCC's\n\n", mel_coeficients)
+
+    plt.subplot(1,2,2)
+    plt.pcolormesh(t1, f1[0:20], espectograma[0:20], shading='gouraud')
+    plt.ylabel('Frequency [Hz]')
+    plt.xlabel('Time [sec]')
+    plt.show()
+
+    plt.show()
+    
+    # mfcc(y, sr)
