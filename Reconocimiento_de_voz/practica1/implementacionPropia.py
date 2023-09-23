@@ -67,6 +67,10 @@ if __name__ == "__main__":
     plt.subplot(1,2,1)
     graficarEspectograma(zxx=zxx, sr=sr)
 
+    #comparar con librosa
+    # plt.subplot(1,2,2)
+    # graficarEspectograma(librosa.stft(y), sr=sr)
+    # plt.show()
     #obtener los mfcc
     f1, t1, espectograma = signal.spectrogram(x=y, fs=sr, nfft=2048)
     print("\n\nespectograma sin convercion a DB\n\n", espectograma)
@@ -74,11 +78,24 @@ if __name__ == "__main__":
     mel_coeficients = speechpy.feature.mfcc(signal=y, sampling_frequency=sr)
     print("\n\nMFCC's\n\n", mel_coeficients)
 
+    librosa_mfcc = librosa.feature.mfcc(y=y, sr=sr)
+
     plt.subplot(1,2,2)
     plt.pcolormesh(t1, f1[0:20], espectograma[0:20], shading='gouraud')
     plt.ylabel('Frequency [Hz]')
     plt.xlabel('Time [sec]')
     plt.show()
+
+    #visualizar los coeficientes de mel
+    plt.subplot(1,2,1)
+    librosa.display.specshow(librosa_mfcc)
+    plt.colorbar(format='%+2.0f dB')
+    plt.title("MFCC's librosa")
+
+    plt.subplot(1,2,2)
+    librosa.display.specshow(mel_coeficients)
+    plt.colorbar(format='%+2.0f dB')
+    plt.title("MFCC's speechpy")
 
     plt.show()
     
