@@ -1,0 +1,4 @@
+matplotlib
+pandas
+ucimlrepo
+odfpy     #<- Este se instala si y solo si usamos archivos .odf
