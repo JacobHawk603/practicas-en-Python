@@ -193,18 +193,27 @@ def credit_aproval():
         for element in X_limpio[clases[i]]:
 
             en_la_matriz = False
+            contador_elementos_repetidos = 0
+            pibote = 0
 
             for j in range(len(arr_auxiliar)):
                 # print(j)
                 if(arr_auxiliar[j] == element):
                     en_la_matriz = True
+                    # pibote = j
+                    # contador_elementos_repetidos +=1
+            
 
             if(not en_la_matriz):
                 arr_auxiliar.append(element)
+            # else:
+            #     arr_auxiliar[pibote][1] = contador_elementos_repetidos
 
         matriz_clases[i].append(arr_auxiliar)
 
     print(clases, "\n\n clases: \n\n", matriz_clases)
+
+    #comenzamos ahora a 
 
     return 0
 
