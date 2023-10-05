@@ -156,65 +156,12 @@ def credit_aproval():
     print(credit_approval.variables)
 
     print(X, y)
+    
+    atributos = X.columns
 
-    #comencemos con obtener la entropia del dataset (entropia general o entropia de la muestra)
-    contador = 0
-    y_pos = 0
-    y_neg = 0
-    for row, target in zip(X.values, y.values):
-        print(row)
 
-        hayFaltantes = False
-        for element in row:
-            if(element == 'missing'):
-                hayFaltantes = True
-
-        if(not hayFaltantes and target != 'missing'):
-            contador +=1
-
-            if(target == '+'):
-                y_pos += 1
-            elif(target == '-'):
-                y_neg += 1
-
-    print(contador, y_pos, y_neg)
-
-    M_aparente = entropia([y_pos, y_neg])   #entropia calculada con los elementos sin datos faltantes en toda la muestra
-
-    #calculemos las entropias por cada uno de los atributos de cada una de las clases
-    clases = X.columns.values
-
-    #por cada una de las clases vamos a identificar todos los tributos que contienen
-    matriz_clases = []
-    for i in range(len(clases)):
-        matriz_clases.append([clases[i]])
-        print("len({})".format(len(matriz_clases)))
-        arr_auxiliar = []
-        for element in X_limpio[clases[i]]:
-
-            en_la_matriz = False
-            contador_elementos_repetidos = 0
-            pibote = 0
-
-            for j in range(len(arr_auxiliar)):
-                # print(j)
-                if(arr_auxiliar[j] == element):
-                    en_la_matriz = True
-                    # pibote = j
-                    # contador_elementos_repetidos +=1
-            
-
-            if(not en_la_matriz):
-                arr_auxiliar.append(element)
-            # else:
-            #     arr_auxiliar[pibote][1] = contador_elementos_repetidos
-
-        matriz_clases[i].append(arr_auxiliar)
-
-    print(clases, "\n\n clases: \n\n", matriz_clases)
-
-    #comenzamos ahora a 
-
+    print(X.columns)
+    
     return 0
 
 if __name__ == "__main__":
