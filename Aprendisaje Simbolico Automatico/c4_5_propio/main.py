@@ -150,7 +150,7 @@ def credit_aproval():
     y = y.fillna('missing')
 
     # metadata
-    print(credit_approval.metadata)
+    print("\n\n dataset: \n\n",credit_approval)
 
     # variable information
     print(credit_approval.variables)
@@ -159,6 +159,17 @@ def credit_aproval():
     
     atributos = X.columns
 
+    # pd.DataFrame.to_csv()
+    frames = [X, y]
+
+    dataframe = pd.concat(frames, axis=1)
+    
+
+    print("\n\n dataframe: \n\n",dataframe)
+
+    pd.DataFrame.to_excel(dataframe, "./src/credit_aproval_dataset.ods")
+
+    exit()
 
     print(X.columns)
     
