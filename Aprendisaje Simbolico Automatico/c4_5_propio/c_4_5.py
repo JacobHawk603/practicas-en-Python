@@ -26,7 +26,7 @@ def entropia(clases:np.ndarray, tamano_muestra:int=None):
 
     return float(i)
 
-def entropia_de_Atributo(ramas:np.ndarray, tamano_muestra:int=None):
+def entropia_de_Atributo(ramas:list[tuple[int, int]], tamano_muestra:int=None):
     '''ramas -> np.ndarray que contiene los elementos por cada decicion posible del algoritmo con los que se va a calcular la entropia\n
         (opcional) tamano_muestra -> int: tamaño de de la muestra que se proporciona, si no se especifica este atributo, se asume que los
         elementos de las ramas conforman el total de la muestra, y con ese valor se generará la entropia del atributo
@@ -104,10 +104,12 @@ def repeticiones_de_valor(valor, valores_observados:list):
     
     return contador
 
-def aptitud(cardinalidad_mas_frecuente:tuple[int, int], cardinalidad_muestra:int):
+def aptitud(cardinalidad_mas_frecuente:list, cardinalidad_muestra:int):
 
-
-    return (cardinalidad_mas_frecuente[0]+cardinalidad_mas_frecuente[1])/(2*cardinalidad_muestra)
+    if(len(cardinalidad_mas_frecuente) < 2):
+        return (cardinalidad_mas_frecuente[0])/(2*cardinalidad_muestra)
+    else:
+        return (cardinalidad_mas_frecuente[0]+cardinalidad_mas_frecuente[1])/(2*cardinalidad_muestra)
 
 
 def intervalo_particion(valores_observados:tuple[str, list[tuple[float, int]]], corpus:np.ndarray, targets:list):
