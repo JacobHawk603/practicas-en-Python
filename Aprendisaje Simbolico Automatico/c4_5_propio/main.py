@@ -2,70 +2,7 @@ from ucimlrepo import fetch_ucirepo
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-
-def entropia(clases:np.ndarray, tamano_muestra:int=None):
-    '''Clases -> np.ndarray que contiene los elementos por clase con los que se va a calcular la entropia\n
-        (opcional) tamano_muestra -> int: tamaño de de la muestra que se proporciona, si no se especifica este atributo, se asume que los
-        elementos de las ramas conforman el total de la muestra, y con ese valor se generará la entropia de clase o de la muestra
-    '''
-    i = 0   #<- Entropia, no un contador de for
-
-    if(tamano_muestra == None):
-        m = 0
-
-        #calculamos el total de los elementos de cada clase
-        for clase in clases:
-            m+=clase
-    else:
-        m = tamano_muestra
-
-
-    #calculamos la entropía
-    for clase in clases:
-        # print("m del error: ", m)
-        if clase != 0:
-            i+=(-(clase/m) * np.log2(clase/m))  #<- Importante, debe de ser logaritmo de base 2 para que de el resultado visto en clase
-
-    return float(i)
-
-def entropia_de_Atributo(ramas:np.ndarray, tamano_muestra:int=None):
-    '''ramas -> np.ndarray que contiene los elementos por cada decicion posible del algoritmo con los que se va a calcular la entropia\n
-        (opcional) tamano_muestra -> int: tamaño de de la muestra que se proporciona, si no se especifica este atributo, se asume que los
-        elementos de las ramas conforman el total de la muestra, y con ese valor se generará la entropia del atributo
-    '''
-    i = 0
-
-    if(tamano_muestra == None):
-        m = 0
-
-        for rama in ramas:
-            m +=rama[0] + rama[1]
-    else:
-        m = tamano_muestra
-
-    for rama in ramas:
-        print(rama)
-        i += ((rama[0] + rama[1])/m) * entropia(rama)
-
-    return float(i)
-
-def ganancia(entropia_general, entropia_atributo):
-    return entropia_general - entropia_atributo
-
-def ganancia_aparente(entropia_general:float, entropia_atributo:float, total_elementos:int, elementos_sin_faltantes:int):
-    return float((elementos_sin_faltantes/total_elementos) * (entropia_general - entropia_atributo))
-
-
-def proporcion_de_ganancia(gan:float, i:float):
-    '''gan -> float64: ganancia del atributo o tambien la ganancia aparente, dependiendo las circunstancias\n
-        i -> float64 entropia del atributo\n\n
-
-        retorna: float64 -> proporción de ganancia para el atributo
-
-    '''
-
-    return float(gan/i)
+import c_4_5
 
 
 def ejemplo_quinlan():
@@ -100,7 +37,7 @@ def ejemplo_quinlan():
 
     print(y_pos, y_neg)
 
-    m = entropia([y_pos, y_neg])
+    m = c_4_5.entropia([y_pos, y_neg])
     print("entropia de la muestra: ",m)
 
     # calculemos la entropia de la una de las ramas y con eso tenemos para saber que todo va en orden
@@ -125,7 +62,7 @@ def ejemplo_quinlan():
 
     print(clima_S, clima_N, clima_LL)
 
-    entropia_clima = entropia_de_Atributo([clima_S, clima_N, clima_LL])
+    entropia_clima = c_4_5.entropia_de_Atributo([clima_S, clima_N, clima_LL])
 
     print(entropia_clima)
 
@@ -146,8 +83,8 @@ def credit_aproval():
     X_limpio = X.dropna()
     y_limpio = y.dropna()
 
-    X = X.fillna('missing')
-    y = y.fillna('missing')
+    # X = X.fillna('missing')
+    # y = y.fillna('missing')
 
     # metadata
     print("\n\n dataset: \n\n",credit_approval)
