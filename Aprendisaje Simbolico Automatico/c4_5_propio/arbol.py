@@ -1,8 +1,16 @@
 class rama:
-    def __init__(self, nodo:str = '', is_hoja:bool = False):
+    def __init__(self, atributos:list = None, nodo:str = '', is_hoja:bool = False):
         self.nodo = nodo
         self.subramas = []
         self.is_hoja = is_hoja
+        self.atributos = atributos
+
+    def mostrarRama(self):
+
+        print("Nodo: ", self.nodo)
+        print("atributos: ", self.atributos)
+        print("sub-ramas: ",self.subramas)
+        print("hoja: ", self.is_hoja)
     
     def ramificar(self, subramas):
         
@@ -17,8 +25,12 @@ class rama:
 
                 if(not sub_rama.is_hoja):
                     return sub_rama
+                else:
+                    continue
+            
+            return sub_rama
 
-        elif(len(self.subramas == 0) and not self.is_hoja):
+        elif(len(self.subramas == 0)):
             # es_hoja = True
             return self
             # return es_hoja, self.subramas
@@ -38,11 +50,11 @@ class rama:
 
 
 class arbol:
-    def __init__(self, nodo_inicial:str):
-        self.arbol = [nodo_inicial, []]
+    def __init__(self, rama_inicial:rama):
+        self.arbol = [rama_inicial]
     
 
-    def ramificar(self, rama:rama, nombre_nodo:str, is_hoja:bool, sub_ramas:list[rama]=None):
+    def ramificar(self, rama:rama, nombre_nodo:str, atributos:list, is_hoja:bool, sub_ramas:list[rama]=None):
         '''ramas -> rama no hoja y sin subramas que obtuvimos de la funcion rama.recorrerRama\n
             nombre_nodo: es el nombre que va a llevar la rama\n
             is_hoja: booleano que modificará el estado del booleano rama.is_hoja para definir siserà una hoja o una rama\n
@@ -52,9 +64,12 @@ class arbol:
         if(not is_hoja):
             rama.nodo = nombre_nodo
             rama.subramas = sub_ramas
+            rama.atributos = atributos
         else:
             # es un nodo terminal, una hoja, y por tanto, no tiene ramificaciones
             rama.nodo = nombre_nodo
+            rama.atributos = atributos
+            rama.is_hoja = is_hoja
             
 
         # for nodo in self.arbol:
