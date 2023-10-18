@@ -30,12 +30,16 @@ def formarArbol(mi_rama:rama, dataFrame:pd.DataFrame):
 
     print("hola?:", sub_dataframes)
 
+    i=0
     for sub_dataframe in sub_dataframes:
+        i+=1
         data = sub_dataframe.drop([mi_rama.nodo], axis=1)
         sub_x = data.drop(['A16'], axis=1)
         sub_y = data['A16']
 
+        print("antes de que se haga el proceso para generar la subrama, este es el dataframe que recibe:", sub_x)
         mi_rama.subramas.append(generacion_hipoteis.generarRama(sub_x, sub_y))
+        print("se ha hecho esta parte del codigo {} veces en el bucle".format(i))
 
     for sub_rama, sub_dataframe in zip(mi_rama.subramas, sub_dataframes):
         formarArbol(sub_rama, sub_dataframe)
@@ -66,4 +70,43 @@ if __name__ == "__main__":
 
     hipotesis = arbol(mi_rama)
 
-    formarArbol(mi_rama, dataFrame)
+    #partimos el dataset
+
+    sub_dataframes = []
+
+    if(not mi_rama.atributos[0].isalpha()): #<- si son categoricos originalmente daràn verdadero a esta condicion
+
+        umbral = float(mi_rama.atributos[0].replace("<= ", ''))
+        print("el humbral: {}\t{}".format(umbral, type(umbral)))
+        
+        # for atributo in mi_rama.atributos:
+
+        # print(dataFrame.filter(like=umbral, axis=0))
+        sub_dataframes.append(dataFrame[dataFrame[mi_rama.nodo] <= umbral])
+
+        # print("hasta aqui la primer rama, veamos la segunda:\n\n", dataFrame)
+
+        sub_dataframes.append(dataFrame[dataFrame[mi_rama.nodo] > umbral])
+
+    else:
+
+        for atributo in mi_rama.atributos:
+            sub_dataframes.append(dataFrame[dataFrame[mi_rama.nodo] == atributo])
+
+    # print("hola?:", sub_dataframes)
+
+    i = 0
+    for sub_dataframe in sub_dataframes:
+        i+=1
+        data = sub_dataframe.drop([mi_rama.nodo], axis=1)
+        sub_x = data.drop(['A16'], axis=1)
+        sub_y = data['A16']
+
+        print("antes de que se haga el proceso para generar la subrama, este es el dataframe que recibe:", sub_x)
+        mi_rama.subramas.append(generacion_hipoteis.generarRama(sub_x, sub_y))
+        print("se ha hecho esta parte del codigo {} veces".format(i))
+    # print("hola?:", sub_dataframes)
+    # exit(0)
+
+    for sub_rama, sub_dataframe in zip(mi_rama.subramas, sub_dataframes):
+        formarArbol(sub_rama, sub_dataframe)

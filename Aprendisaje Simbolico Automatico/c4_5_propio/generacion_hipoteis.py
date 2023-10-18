@@ -191,11 +191,11 @@ def generarRama(X, y):
     repeticiones_de_particiones = []
 
     for atributo in valores_observados_por_atributo:
-        # print("\n\n{}\n\n".format(atributo[0]))
+        print("\n\n{}\n\n".format(atributo[0]))
 
         particion_de_atributo, repeticiones_de_clase_de_particion = c_4_5.intervalo_particion(atributo, x_muestra_limpio[atributo[0]].values, y_muestra_limpio.values)
 
-        # print("La mejor particion para el atributo es: ", particion_de_atributo)
+        print("La mejor particion para el atributo es: ", particion_de_atributo)
         particiones_de_atributo.append(particion_de_atributo)
         repeticiones_de_particiones.append([atributo[0], repeticiones_de_clase_de_particion])
 

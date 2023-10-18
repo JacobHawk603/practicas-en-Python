@@ -20,7 +20,7 @@ def entropia(clases:np.ndarray, tamano_muestra:int=None):
 
     #calculamos la entropía
     for clase in clases:
-        # print("m del error: ", m)
+        # # print("m del error: ", m)
         if clase != 0:
             i+=(-(clase/m) * np.log2(clase/m))  #<- Importante, debe de ser logaritmo de base 2 para que de el resultado visto en clase
 
@@ -42,7 +42,7 @@ def entropia_de_Atributo(ramas:list[tuple[int, int]], tamano_muestra:int=None):
         m = tamano_muestra
 
     for rama in ramas:
-        print(rama)
+        # print(rama)
         i += ((rama[0] + rama[1])/m) * entropia(rama)
 
     return float(i)
@@ -130,21 +130,21 @@ def intervalo_particion(valores_observados:tuple[str, list[tuple[float, int]]], 
             
     valores.sort()
 
-    print(valores)
+    # print(valores)
 
     #ya estan ordenados los valores, ahora, hay que definir los intervalos, identificando a que clase pertenecen cada uno de ellos
 
     tupla_valor_clase = []
     corpus_list = corpus.tolist()
-    print(corpus_list)
+    # print(corpus_list)
 
-    print("el tipo de dato: ", type(corpus))
-    print(corpus_list.index(valores[0]))
+    # print("el tipo de dato: ", type(corpus))
+    # print(corpus_list.index(valores[0]))
 
     for valor in valores:
         tupla_valor_clase.append([valor, targets[corpus_list.index(valor)]])
 
-    print(tupla_valor_clase)
+    # print(tupla_valor_clase)
 
     # ahora que tenemos la lista de tuplas, vamos a agrupar en dos intervalos, y vamos a identificar la agrupación con mejor aptitud
 
@@ -156,7 +156,7 @@ def intervalo_particion(valores_observados:tuple[str, list[tuple[float, int]]], 
     
         particion = particionar(tupla_valor_clase, razon_de_particion)
 
-        print(particion)
+        # print(particion)
 
         #ahora que obtuvimos la particion evaluamos su aptitud para saber se trata de la mejor o hay una mejor
 
@@ -199,12 +199,12 @@ def evaluar_particion(particion:tuple[list[tuple[float, str]], list[tuple[float,
     for tupla in particion[0]:
         observados.append(tupla[1])
 
-    print("linea 200, observados; ",observados)
+    # print("linea 200, observados; ",observados)
 
     #identificamos el total de elementos por clase de la primer particion
 
     clases = valores_observados(observados)
-    print(clases)
+    # print(clases)
 
     for clase in clases:
 
@@ -220,7 +220,7 @@ def evaluar_particion(particion:tuple[list[tuple[float, str]], list[tuple[float,
 
         repeticiones_clase2.append(repeticiones_de_valor(clase, observados))
 
-    print("valores por clase de la particion; ", repeticiones_clase1, repeticiones_clase2)
+    # print("valores por clase de la particion; ", repeticiones_clase1, repeticiones_clase2)
 
     #seleccionamos la clase màs frecuente
     print("repeticiones de clase1:", repeticiones_clase1)
@@ -250,12 +250,12 @@ def evaluar_particion(particion:tuple[list[tuple[float, str]], list[tuple[float,
 
     aptitud_particion = aptitud(clase_mayor, (cardinalidad_clase_1 + cardinalidad_clase_2))
 
-    print("la clase mas frecuente es: ", clase_mayor)
-    print("la aptitud es: ", aptitud_particion)
+    # print("la clase mas frecuente es: ", clase_mayor)
+    # print("la aptitud es: ", aptitud_particion)
 
     if(aptitud_particion > mejor_aptitud):
 
-        print("repeticiones de la actual mejor clase: ", repeticiones_clase1, repeticiones_clase2)
+        # print("repeticiones de la actual mejor clase: ", repeticiones_clase1, repeticiones_clase2)
 
         return True, aptitud_particion, [repeticiones_clase1, repeticiones_clase2]
     
