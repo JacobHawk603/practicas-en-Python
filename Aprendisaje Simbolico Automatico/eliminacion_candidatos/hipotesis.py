@@ -1,3 +1,5 @@
+from random import randint
+
 class General:
 
     acepta_todo:bool
@@ -144,27 +146,6 @@ def minimas_Especializaciones(hipotesis_general:General, dominios_atributos:list
 
 def validar_hipotesis_generales(hipotesis_generales:list[General], fila:list[str], caso_positivo:bool = True):
 
-    # print("me estoy invocando")
-    # for valor_observado in fila:
-
-    #     bandera_mochadora = False
-    
-    #     for hipotesis in hipotesis_generales:
-
-    #         if not hipotesis.aceptados[fila.index(valor_observado)].__contains__(valor_observado):
-                
-    #             #si no se encuentra el valor observado en la lista de aceptados de la hipotesis, tenemos que eliminarla
-    #             bandera_mochadora = True
-
-    #         else:
-    #             print("no mochamos nada")
-
-    #     if bandera_mochadora:
-
-    #         print("mochamos la hipotesis general, porque {} no aparece en la misma".format(valor_observado))
-    #         hipotesis_generales.pop(hipotesis_generales.index(hipotesis))
-
-
     hipotesis_rechazadas = []
 
     for hipotesis in hipotesis_generales:
@@ -192,6 +173,7 @@ def validar_hipotesis_generales(hipotesis_generales:list[General], fila:list[str
         if bandera_mochadora:
             
             hipotesis_rechazadas.append(hipotesis)
+            print("mochamos la hipotesis general {} porque no cubre al caso observado".format(hipotesis))
         
         else:
             
@@ -202,9 +184,98 @@ def validar_hipotesis_generales(hipotesis_generales:list[General], fila:list[str
         
         hipotesis_a_mochar = hipotesis_rechazadas.pop()
 
-        print("mochamos la hipotesis general, porque {} no aparece en la misma".format(valor_observado))
         hipotesis_generales.pop(hipotesis_generales.index(hipotesis_a_mochar))
             
 
 
     return hipotesis_generales
+
+def predicciones(fila:list[str], hipotesis_general:General=None, hipotesis_especifica:Especifica=None):
+
+    banderas:list[bool] = []
+    contador_banderas = 0
+
+    for i in range(len(fila)):
+        banderas.append(False)
+
+    if hipotesis_general != None:
+
+        for valor_observado, aceptados, bandera_index in zip(fila, hipotesis_general.aceptados, range(len(banderas))):
+
+            print("len aceptados: ", len(aceptados))
+
+            if len(aceptados) > 0:
+
+                for aceptado in aceptados:
+
+                    if(aceptado == valor_observado):
+                        banderas[bandera_index] = True
+            else:
+                banderas[bandera_index] = True
+
+        for bandera in banderas:
+            if bandera:
+                contador_banderas +=1
+        
+        if(contador_banderas >= len(banderas)):
+            return randint(1, 2)
+        
+        else:
+            print("este es el contador:", contador_banderas)
+            return 3
+        
+    else:
+
+        #estamos evaluando la hipotesis esecifica
+
+        for valor_observado, aceptados, bandera_index in zip(fila, hipotesis_especifica.aceptados, range(len(banderas))):
+
+            if len(aceptados) > 0:
+
+                for aceptado in aceptados:
+            
+                    if(aceptado == valor_observado):
+                        banderas[bandera_index] = True
+
+            else:
+                banderas[bandera_index] = True
+
+        for bandera in banderas:
+            if bandera:
+                contador_banderas +=1
+        
+        if(contador_banderas >= len(banderas)):
+            return randint(1, 2)
+        
+        else:
+            return 3
+        
+def probarHipotesis(valores_predichos:list[str], valores_reales:list[str], casos_positivos:list[str]):
+
+    vp = 0
+    fp = 0
+    vn = 0
+    fn = 0
+
+    for predicho, real in zip(valores_predichos, valores_reales):
+        
+        if(predicho == real and casos_positivos.__contains__(real)):
+            vp += 1
+        elif(predicho == real and not casos_positivos.__contains__(real)):
+            vn += 1
+        elif(predicho != real and not casos_positivos.__contains__(real)):
+            fp += 1
+        elif(predicho != real and not casos_positivos.__contains__(predicho) and casos_positivos.__contains__(real)):
+            fn += 1
+        elif(predicho != real and casos_positivos.__contains__(predicho) and casos_positivos.__contains__(real)):
+            vp += 1
+
+    accuracy = (vp + vn)/(vp + vn + fp + fn)
+    presicion = vp/(vp + fp)
+    recall = vp/(vp+fn)
+    f1 = 2*((presicion * recall)/(presicion + recall))
+
+
+    print("vp: {}\tfp: {}\nfn: {}\t vn: {}".format(vp, fp, fn, vn))
+    print("accuracy: {}\nprecision: {}\nrecall: {}\nf1: {}".format(accuracy, presicion, recall, f1))
+    return 0
