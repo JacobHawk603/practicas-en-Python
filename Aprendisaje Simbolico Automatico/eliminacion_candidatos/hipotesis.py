@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, uniform
 
 class General:
 
@@ -279,3 +279,27 @@ def probarHipotesis(valores_predichos:list[str], valores_reales:list[str], casos
     print("vp: {}\tfp: {}\nfn: {}\t vn: {}".format(vp, fp, fn, vn))
     print("accuracy: {}\nprecision: {}\nrecall: {}\nf1: {}".format(accuracy, presicion, recall, f1))
     return 0
+
+def probarHipotesis2(predicciones_generales:list[list[str]], prediccion_especifica:list[str], porcentaje_general:float = 0.75):
+
+    porcentaje_por_hipotesis_general = porcentaje_general/len(predicciones_generales)
+    porcentaje_especifico = 1 - porcentaje_general
+
+    valor_aleatorio = uniform(0,1)
+
+    matriz_predicciones = predicciones_generales
+    matriz_predicciones.append(prediccion_especifica)
+
+    prediccion_final:list[str] = []
+
+    for i in range(len(matriz_predicciones[0])):
+
+        if(valor_aleatorio > porcentaje_general):
+            prediccion_final.append(prediccion_especifica[0])
+        
+        else:
+            modulo = int(valor_aleatorio % porcentaje_por_hipotesis_general)
+
+            prediccion_final.append(predicciones_generales[modulo][i])
+
+    return prediccion_final
