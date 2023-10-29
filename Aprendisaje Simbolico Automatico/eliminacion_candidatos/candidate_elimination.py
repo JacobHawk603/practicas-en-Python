@@ -105,4 +105,4 @@ def Candidtae_Elimination(hipotesis_especificas:list[Especifica], hipotesis_gene
         print(len(hipotesis_generales))
 
     
-    return hipotesis_generales, hipotesis_especificas
+    return hipotesis_generales, hipotesis_especifica
