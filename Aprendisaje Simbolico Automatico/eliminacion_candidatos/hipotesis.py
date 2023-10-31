@@ -190,7 +190,7 @@ def validar_hipotesis_generales(hipotesis_generales:list[General], fila:list[str
 
     return hipotesis_generales
 
-def predicciones(fila:list[str], hipotesis_general:General=None, hipotesis_especifica:Especifica=None):
+def predicciones(fila:list[str], hipotesis_general:General=None, hipotesis_especifica:Especifica=None, asignacion:list[str] = [4, 3]):
 
     banderas:list[bool] = []
     contador_banderas = 0
@@ -218,11 +218,11 @@ def predicciones(fila:list[str], hipotesis_general:General=None, hipotesis_espec
                 contador_banderas +=1
         
         if(contador_banderas >= len(banderas)):
-            return randint(1, 2)
+            return asignacion[0]
         
         else:
             print("este es el contador:", contador_banderas)
-            return 3
+            return asignacion[1]
         
     else:
 
@@ -245,10 +245,10 @@ def predicciones(fila:list[str], hipotesis_general:General=None, hipotesis_espec
                 contador_banderas +=1
         
         if(contador_banderas >= len(banderas)):
-            return randint(1, 2)
+            return asignacion[0]
         
         else:
-            return 3
+            return asignacion[1]
         
 def probarHipotesis(valores_predichos:list[str], valores_reales:list[str], casos_positivos:list[str]):
 
