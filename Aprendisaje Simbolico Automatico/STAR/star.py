@@ -58,12 +58,12 @@ class complejo:
 
         banderas_selectores:list[bool] = []
 
-        for un_selector in self.selectores:
-            
-            for i, row in dataset_casos_positivos.iterrows():
+        for i, row in dataset_casos_positivos.iterrows():
 
+            for un_selector in self.selectores:
+                
                 if row[un_selector.etiqueta] == un_selector.valor:
-                    banderas_selectores.append(True)
+                        banderas_selectores.append(True)
                 else:
                     banderas_selectores.append(False)
 
@@ -72,9 +72,12 @@ class complejo:
 
             for i, bandera in enumerate(banderas_selectores):
                 
-                if i >= len(banderas_selectores)-1:
+                if i >= len(banderas_selectores)-1 and bandera:
                     #todas las banderas son verdaderas, por lo que si cubre al ejemplo positivo
                     self.cobertura +=1
+                
+                elif not bandera:
+                    break
 
 
             
@@ -210,3 +213,33 @@ class estrella:
             un_complejo.calcular_cobertura(dataset_casos_positivos)
 
         #ahora con todas las coberturas listas, identificamos si hay alguno que tenga una mayor cobertura
+        cobertura_maxima:int = 0
+        complejos_coberturas:list[tuple[int, complejo]] = []
+
+        for i, un_complejo in enumerate(self.Su_Cubrimiento.complejos):
+            
+            if un_complejo.cobertura > cobertura_maxima:
+                cobertura_maxima = un_complejo.cobertura
+
+                complejos_coberturas.append((cobertura_maxima, un_complejo))
+            
+            elif un_complejo.cobertura == cobertura_maxima:
+
+                complejos_coberturas.append((un_complejo.cobertura, un_complejo))
+            
+            else:
+
+                complejos_coberturas.append((un_complejo.cobertura, un_complejo))
+
+        #ahora, todos los complejos que tengan la mayor cobertura al final del bucle anterior, sobrevivirán, el resto será funado
+        print("la cobertura máxima: ", cobertura_maxima)
+        for cobertura, elemento in complejos_coberturas:
+
+            if cobertura < cobertura_maxima:
+
+                #eliminamos el complejo
+                print("el complejo {} con cobertura: {} será eliminado por la cobertura {}".format(elemento.etiqueta, elemento.cobertura, cobertura_maxima))
+                self.Su_Cubrimiento.eliminar_complejo(elemento.etiqueta)
+            
+            else:
+                print("el complejo {} con cobertura {} se salvó de la guillotina".format(un_complejo.etiqueta, un_complejo.cobertura))
