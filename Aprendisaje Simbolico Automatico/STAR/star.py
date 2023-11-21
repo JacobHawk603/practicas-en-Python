@@ -56,10 +56,9 @@ class complejo:
 
     def calcular_cobertura(self, dataset_casos_positivos:pd.DataFrame):
 
-        banderas_selectores:list[bool] = []
-
         for i, row in dataset_casos_positivos.iterrows():
-
+            
+            banderas_selectores:list[bool] = []
             for un_selector in self.selectores:
                 
                 if row[un_selector.etiqueta] == un_selector.valor:
@@ -72,16 +71,39 @@ class complejo:
 
             for i, bandera in enumerate(banderas_selectores):
                 
-                if i >= len(banderas_selectores)-1 and bandera:
+                if i == len(banderas_selectores)-1 and bandera:
                     #todas las banderas son verdaderas, por lo que si cubre al ejemplo positivo
                     self.cobertura +=1
                 
                 elif not bandera:
                     break
 
+    def lo_cubre(self, row:pd.DataFrame):
+        
+        banderas:list[bool] = []
 
+        for un_selector in self.selectores:
+
+            if row[un_selector.etiqueta] == un_selector.valor:
+                
+                banderas.append(True)
             
+            else:
+                
+                return False
+        
+
+        #revisamos si todas las banderas son verdaderas, en ese caso, si está cubriendo al ejemplo positivo
+            # de lo contrario, con una sola bandera que sea falsa, no cubre al ejemplo positivo
+
+        for i, bandera in enumerate(banderas):
             
+            if i == len(banderas)-1 and bandera:
+                #todas las banderas son verdaderas, por lo que si cubre al ejemplo positivo
+                return True
+            
+            elif not bandera:
+                return False
 
 
 class cubrimiento:
@@ -243,3 +265,122 @@ class estrella:
             
             else:
                 print("el complejo {} con cobertura {} se salvó de la guillotina".format(un_complejo.etiqueta, un_complejo.cobertura))
+
+    def Eliminar_Ejemplos_Cubiertos(self, dataset_casos_positivos:pd.DataFrame):
+
+        # print(dataset_casos_positivos)
+
+        for i, row in dataset_casos_positivos.iterrows():
+
+            for un_complejo in self.Su_Cubrimiento.complejos:
+                
+                if un_complejo.lo_cubre(row):
+                    dataset_casos_positivos = dataset_casos_positivos.drop(i)
+                    break
+        
+        return dataset_casos_positivos
+           
+    
+
+def generarCubrimiento(estrellas:list[estrella], casos_positivos:pd.DataFrame, casos_negativos:pd.DataFrame, dominios_completos_atributos:list[list[str]]):
+
+    ##obtenemos la semilla
+    semilla = casos_positivos.sample()  # <- https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.sample.html
+
+    ##generamos la estrella
+
+    una_estrella = estrella()
+
+    una_estrella.generarEstrella(semilla, dominios_completos_atributos)
+
+   
+
+
+    ## Eliminar complejos que cubren ejemplos negativos
+    una_estrella.eliminar_complejos_que_cubren_ejemplos_negativos(casos_negativos)
+
+   
+
+
+    ## Reducir la estrella en la medida de lo posible
+    una_estrella.reducirEstrella(casos_positivos)
+
+    #hasta aquí ya quedó lista la estrella, as`+i que hay que agregarla a la lista de estrellas
+    estrellas.append(una_estrella)
+
+
+    # Si aún quedan ejemplos por cubrir, debemos de volver a seleccionar semilla
+    ## Para esto, vamos a quitar del dataset de entrenamiento los registros que ya están cubiertos por alguna estrella
+    casos_por_cubrir = una_estrella.Eliminar_Ejemplos_Cubiertos(casos_positivos)
+
+    if not casos_por_cubrir.empty:
+        generarCubrimiento(estrellas, casos_por_cubrir, casos_negativos, dominios_completos_atributos)
+    
+
+    #con el dataset nuevo dataset volvemos a seleccionar la semilla 
+
+    # print(casos_por_cubrir)
+    # print(casos_positivos)
+
+    return estrellas
+
+def prediccion_de_clase(estrellas:list[estrella], validacion:pd.DataFrame, clases:list[str]):
+
+    predicciones:list[str] = []
+
+    for i, row in validacion.iterrows():
+
+        for una_estrella in estrellas:
+
+            contador_auxiliar:int = 0
+            for un_complejo in una_estrella.Su_Cubrimiento.complejos:
+
+                if un_complejo.lo_cubre(row):
+
+                    predicciones.append(clases[0])
+                    break
+                
+                else:
+                    contador_auxiliar +=1
+            
+            if contador_auxiliar >= len(una_estrella.Su_Cubrimiento.complejos):
+                predicciones.append(clases[1])
+
+            break
+    
+    return predicciones
+
+def probarHipotesis(valores_predichos:list[str], valores_reales:list[str], casos_positivos:list[str]):
+
+    vp = 0
+    fp = 0
+    vn = 0
+    fn = 0
+
+    for predicho, real in zip(valores_predichos, valores_reales):
+        
+        if(predicho == real and casos_positivos.__contains__(real)):
+            vp += 1
+        elif(predicho == real and not casos_positivos.__contains__(real)):
+            vn += 1
+        elif(predicho != real and not casos_positivos.__contains__(real)):
+            fp += 1
+        elif(predicho != real and not casos_positivos.__contains__(predicho) and casos_positivos.__contains__(real)):
+            #un falso negativo en este algoritmo, en donde las estrellas son consistentes, solo puede implicar que el registro pertenece a ambas clases
+            #por tanto, hagamos una modificación aquí, no agreguemos el ejemplo como un falso negativo, sino que agreguemosle .5 y .5 a los falses respectivamente
+            # fn += 1
+            fp += 0.5
+            fn += 0.5
+
+        elif(predicho != real and casos_positivos.__contains__(predicho) and casos_positivos.__contains__(real)):
+            vp += 1
+
+    accuracy = (vp + vn)/(vp + vn + fp + fn)
+    presicion = vp/(vp + fp)
+    recall = vp/(vp+fn)
+    f1 = 2*((presicion * recall)/(presicion + recall))
+
+
+    print("vp: {}\tfp: {}\nfn: {}\t vn: {}".format(vp, fp, fn, vn))
+    print("accuracy: {}\nprecision: {}\nrecall: {}\nf1: {}".format(accuracy, presicion, recall, f1))
+    return 0

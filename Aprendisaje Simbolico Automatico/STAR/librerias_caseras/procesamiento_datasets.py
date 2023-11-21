@@ -91,10 +91,10 @@ def extraer_muestra(corpus:pd.DataFrame, target:pd.DataFrame, proporcion:list, t
             muestra_target.append(match_targets.pop(valor_aleatorio))
 
     muestra_corpus_dataframe = pd.DataFrame(muestra_corpus, columns=corpus.columns)
-    muestra_target_dataframe = pd.DataFrame(muestra_target[:], columns=["target"])
+    muestra_target_dataframe = pd.DataFrame(muestra_target[:], columns=["Class"])
 
     validacion_corpus_dataframe = pd.DataFrame(match_datos, columns=corpus.columns)
-    validacion_target_dataframe = pd.DataFrame(match_targets[:], columns=["target"])
+    validacion_target_dataframe = pd.DataFrame(match_targets[:], columns=["Class"])
 
     # print(muestra_corpus_dataframe)
     # print(muestra_target_dataframe)
