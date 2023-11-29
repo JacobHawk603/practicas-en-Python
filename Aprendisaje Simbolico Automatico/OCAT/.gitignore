@@ -1,1 +1,9 @@
 __pycache__
+*.test
+*.train
+*.dat
+*.Z
+*.names
+Index
+update
+.~lock.*
