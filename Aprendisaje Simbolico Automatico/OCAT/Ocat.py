@@ -22,13 +22,15 @@ class Selector:
     
 class Identificador:
 
+    etiqueta:str
     row:int
     column:int
 
-    def __init__(self, row:int, column:int):
+    def __init__(self, row:int, column:int, etiqueta:str):
 
         self.row = row
         self.column = column
+        self.etiqueta = etiqueta
 
     def __str__(self):
 
@@ -54,3 +56,20 @@ class Complejo:
         cadena += ")"
 
         return cadena
+    
+    def agregarIdentificadores(self, nuevsos_identificadores:list[Selector]):
+        
+        for elemento in nuevsos_identificadores:
+            self.identificadores.append(elemento)
+
+    def encontrar_identificador(self, etiqueta:str):
+
+        for elemento in self.identificadores:
+
+            if elemento.etiqueta == etiqueta:
+                return elemento
+
+
+    def eliminar_identificador(self, etiqueta:str):
+
+        self.identificadores.pop(self.identificadores.index(self.encontrar_identificador(etiqueta)))
