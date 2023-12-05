@@ -6,7 +6,7 @@ class Selector:
 
     def __init__(self, etiqueta:str, valor, positivo:bool = True):
         self.etiqueta = etiqueta
-        self.valor = valor
+        # self.valor = valor
         self.positvo = positivo
     
     def __str__(self):
@@ -16,7 +16,7 @@ class Selector:
         if not self.positvo:
             cadena += "¬"
 
-        cadena += f"[{self.etiqueta} >= {self.valor}]"
+        cadena += f"[{self.etiqueta} = {self.valor}]"
 
         return 
     
@@ -37,39 +37,86 @@ class Identificador:
         return f"X{self.row},{self.column}"
     
 class Complejo:
-    
-    identificadores:list[Identificador]
+
+    selectores:list[Selector]
+
+    def __init__(self, etiqueta:str, selectores:list[Selector] | None = None):
+        self.etiqueta = etiqueta
+
+        if not selectores == None:
+            self.selectores = selectores
 
     def __str__(self):
 
         cadena:str = "("
 
-        if len(self.identificadores) > 0:
+        if len(self.selectores) > 0:
 
-            for i, identificador in enumerate(self.identificadores):
+            for i, selector in enumerate(self.selectores):
 
-                cadena += str(identificador)
+                cadena += str(selector)
 
-                if i < len(self.identificadores)-1:
-                    cadena += " or "
+                if i < len(self.selectores)-1:
+                    cadena += " "
 
         cadena += ")"
 
         return cadena
     
-    def agregarIdentificadores(self, nuevsos_identificadores:list[Selector]):
+    def agregar_selectores(self, nuevsos_selectores:list[Selector]):
         
-        for elemento in nuevsos_identificadores:
-            self.identificadores.append(elemento)
+        for elemento in nuevsos_selectores:
+            self.selectores.append(elemento)
 
-    def encontrar_identificador(self, etiqueta:str):
+    def encontrar_selector(self, etiqueta:str):
 
-        for elemento in self.identificadores:
+        for elemento in self.selectores:
 
             if elemento.etiqueta == etiqueta:
                 return elemento
 
 
-    def eliminar_identificador(self, etiqueta:str):
+    def eliminar_selector(self, etiqueta:str):
 
-        self.identificadores.pop(self.identificadores.index(self.encontrar_identificador(etiqueta)))
+        self.selectores.pop(self.selectores.index(self.encontrar_selector(etiqueta)))
+
+class Cubrimiento:
+
+    etiqueta:str
+    complejos:list[Complejo]
+
+    def __init__(self, etiqueta:str, complejos:list[Complejo] | None = None):
+        
+        self.complejos = complejos
+
+        if not complejos == None:
+            self.etiqueta = etiqueta
+
+    def __str__(self):
+
+        # print("cubrimiento: ", self.etiqueta, "\n\n")
+
+        # cadena:str = "cubrimiento: "+ self.etiqueta+ "\n\n"
+        cadena:str = ""
+
+        for elemento in self.complejos:
+            cadena += str(elemento) + "\n"
+        
+        return cadena
+
+    def agregarComplejos(self, nuevos_complejos:list[Complejo]):
+
+        for elemento in nuevos_complejos:
+            self.complejos.append(elemento)
+    
+    def encontrarComplejo(self, etiqueta:str):
+
+        for elemento in self.complejos:
+
+            if elemento.etiqueta == etiqueta:
+                return elemento
+            
+    def eliminar_complejo(self, etiqueta:str):
+
+        print("la etiqueta: ", etiqueta)
+        self.complejos.pop(self.complejos.index(self.encontrarComplejo(etiqueta)))
