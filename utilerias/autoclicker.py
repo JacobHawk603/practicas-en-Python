@@ -19,7 +19,18 @@ def switch_bandera():
 if __name__ == "__main__":
 
     bandera = True
+
+    print("""Este algoritmo grabará todos los movimientos que hagas con el mause, y una vez que presiones el boton derecho del mouse,
+           comenzará a repetir los movimientos que realizaste\n\n
+          
+          comencemos por grabar los movimientos:\n\n
+          
+          1. mueve el mouse como quieras moverlo\n
+          2. presiona el botón derecho del mouse""")
+
     events = mouse.record()
+
+    print("el algoritmo se está ejecutando...\n\n si deseas parar el bucle, pulsa el botón isquiero del mouse")
     
     while bandera:
 
@@ -37,3 +48,5 @@ if __name__ == "__main__":
         mouse.on_click(callback=switch_bandera)
 
         mouse.play(events[:-1])
+
+    print("Se ha parado el bucle, hasta pronto")
