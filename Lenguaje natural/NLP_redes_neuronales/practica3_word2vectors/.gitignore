@@ -1,0 +1,7 @@
+*.zip
+*.csv
+text-preprocessing
+text_preprocessing
+__pycache__
+*.pkl
+*.h5
