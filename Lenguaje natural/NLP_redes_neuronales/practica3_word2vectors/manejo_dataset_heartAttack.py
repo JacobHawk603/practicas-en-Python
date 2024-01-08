@@ -24,7 +24,7 @@ class Data_set:
 		self.validation_set = validation_set
 		self.test_set = test_set
 
-def generate_train_test(target_label:str, file_path:str=None, dataframe:pd.DataFrame=None, kfolds:int = None, test_size=0.4, shuffle = False):
+def generate_train_test(target_label:str, file_path:str=None, dataframe:pd.DataFrame=None, kfolds:int = None, test_size=0.4, shuffle = True):
 	# ~ pd.options.display.max_colwidth = 200		#Define el acho de las columnas (ancho máximo por default 50 caracteres)		
 	#Lee el corpus original del archivo de entrada y lo pasa a un DataFrame
 	if(file_path != None):
@@ -92,7 +92,7 @@ def generate_train_test(target_label:str, file_path:str=None, dataframe:pd.DataF
 		my_data_set = Data_set(validation_sets, my_test_set) 
 		return (my_data_set)
 	
-def manejo_datasets(target_label:str, file_path:str = None, dataframe:pd.DataFrame = None, kfolds=3, test_size=0.3):
+def manejo_datasets(target_label:str, file_path:str = None, dataframe:pd.DataFrame = None, kfolds=3, test_size=0.3, shuffle:bool = False):
 
 	if file_path != None:
 		data = pd.read_csv(file_path)
@@ -109,7 +109,7 @@ def manejo_datasets(target_label:str, file_path:str = None, dataframe:pd.DataFra
 		else:
 			labels += label
 
-	my_data_set=generate_train_test(dataframe=data, target_label=target_label, kfolds=kfolds, test_size=test_size)
+	my_data_set=generate_train_test(dataframe=data, target_label=target_label, kfolds=kfolds, test_size=test_size, shuffle=shuffle)
 	
 	#Guarda el dataset en formato csv
 	np.savetxt("X_test.csv", my_data_set.test_set.X_test, delimiter=",", fmt="%s",
